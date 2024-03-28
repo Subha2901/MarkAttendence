@@ -1,0 +1,29 @@
+.rc_highlight button {
+    background-color: #15f90033 !important;
+    border-radius: 20%;
+}
+
+.rc_disabled {
+    color: #fff;
+}
+
+
+@media screen and (min-width: 785px) {
+    .outer-box{
+        margin: 0% 20%;
+    }
+}
+
+.react-timerange-picker__clock {
+    inset:  auto auto 100% 0px !important;
+    border-radius: 10%;
+    border:  thick double #004C4C !important;
+}
+
+.css-1t1j96h-MuiPaper-root-MuiDialog-paper, .css-ypiqx9-MuiDialogContent-root{
+    overflow-y: visible !important;
+}
+
+.ant-picker-dropdown {
+    z-index: 1500 !important;
+}

@@ -1,0 +1,40 @@
+body
+	font-family: 'Roboto', sans-serif
+
+ol.style_1
+	counter-reset: li
+	small
+		opacity: .3
+	ol, ul
+		padding: .75rem 0 0 1.5rem
+	li
+		margin-bottom: .375rem
+
+	> li
+		position: relative
+		counter-increment: li
+		min-height: 2rem
+		padding-top: .5rem
+		list-style: none
+
+		&::before, &::after
+			position: absolute
+			display: flex
+			opacity: 0.35
+
+		&::before
+			content: counter(li)
+			left: - 2.75rem
+			height: calc(1.5rem - 1px)
+			width: calc(1.5rem - 1px)
+			align-items: center
+			justify-content: center
+			border-radius: 50%
+			border: 0.5px solid currentcolor
+
+		&::after
+			content: ''
+			left: -2rem
+			top: calc(1.9rem + 1px)
+			height: calc(100% - 2rem)
+			border-left: 0.5px solid currentcolor
