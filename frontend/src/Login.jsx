@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -14,6 +14,11 @@ const Login = () => {
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (localStorage.getItem("isAuthenticated") === 'true') navigate("/");
+    else navigate("/login");
+  }, []);
 
   const handleChange = function (event) {
     setUser({
@@ -35,16 +40,40 @@ const Login = () => {
       axios
         .post("http://localhost:4000/login", user)
         .then((res) => {
-          console.log("Response:", res);
-          console.log(res.data.data[0].NAME);
-          console.log(res.data.dateDetails);
-          navigate('/user', {state: {name: res.data.data[0].NAME, email: res.data.data[0].IDUSER, dates: res.data.dateDetails}});
+          console.log(res);
+
+          const data = res.data;
+          const dates = data.dateDetails;
+
+          var attendenceDatesArr = [];
+          var timeRangeArr = [];
+
+          // console.log(dates[0].DATE);
+          // console.log(dates[0].START_TIME);
+          // console.log(dates[0].END_TIME);
+  
+
+          for (let i = 0; i < dates.length; i++) {
+            attendenceDatesArr[i] = new Date(dates[i].DATE);
+            timeRangeArr[i] = ([dates[i].START_TIME, dates[i].END_TIME ]);
+            // timeRangeArr[i][1] = dates[i].END_TIME;
+          }
+
+          localStorage.setItem("isAuthenticated", true);
+          localStorage.setItem("name", data.data[0].NAME);
+          localStorage.setItem("email", data.data[0].IDUSER);
+          localStorage.setItem(
+            "attendenceDatesArr",
+            JSON.stringify(attendenceDatesArr)
+          );
+          localStorage.setItem("timeRangeArr", JSON.stringify(timeRangeArr));
+          navigate("/");
         })
         .catch((error) => {
+          localStorage.setItem("isAuthenticated", false);
           console.log("Error:", error);
         });
-    }
-    else alert('Please enter valid input')
+    } else alert("Please enter valid input");
   };
 
   // const handleLogout = function(event){

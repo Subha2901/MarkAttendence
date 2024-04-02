@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import "./UserDetails.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Calendar } from "@natscale/react-calendar";
 import "@natscale/react-calendar/dist/main.css";
 import axios from "axios";
@@ -11,17 +11,20 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { TimePicker } from "antd";
+import NewMarkedList from "../NewMarkedList/NewMarkedList";
 
 const UserDetails = () => {
-  const [width, setWidth] = useState(window.innerWidth);
-  const location = useLocation();
-  const name = location.state && location.state.name;
-  const email = location.state && location.state.email;
-  var dates = location.state && location.state.dates;
+  // const [width, setWidth] = useState(window.innerWidth);
+  // const location = useLocation();
+  const name = localStorage.getItem("name");
+  const email = localStorage.getItem("email");
+  var dates = JSON.parse(localStorage.getItem("attendenceDatesArr")) || [];
+  var timeRangeArr = JSON.parse(localStorage.getItem("timeRangeArr")) || [];
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
   const [valueLength, setValueLength] = useState(value.length);
   const [timeRange, setTimeRange] = useState([]);
+  const navigate = useNavigate();
 
   const format = "HH:mm";
 
@@ -30,88 +33,151 @@ const UserDetails = () => {
   };
 
   const handleCancelPopup = useCallback(() => {
-    setValue(value.slice(0,-1));
+    setValue(value.slice(0, -1));
     setOpen(false);
   }, [value]);
 
   const handleSubmitPopup = useCallback(() => {
     setOpen(false);
-  }, [])
+  }, []);
 
-  var markedDates = [];
-  // const userEmail = useState(email);
-  useEffect(() => {
-    for (let i = 0; i < dates.length; i++) {
-      markedDates[i] = new Date(dates[i].date);
-    }
-  }, [dates])
-  
+  // const updateTimeRange = useCallback((val) => {
+  //   let l = value.length;
+  //   var tempTimeRange = [...timeRange];
+  //   alert('TempTimeRange -> '+ tempTimeRange);
+  //   for (let i = 0; i < l; i++) {
+  //     console.log('Loop Started');
+  //     // console.log(val, value);
+  //     // console.log(val[i], value[i]);
+  //     // console.log(tempTimeRange);
+  //     if (value[i] !== val[i]) {
+  //       tempTimeRange.splice(i,1);
+  //       alert(i)
+  //       alert('Timerange 1-> '+ tempTimeRange);
+  //       setTimeRange(tempTimeRange)
+  //       break;
+  //     }
+  //     if (value[l - 1 - i] !== val[l - 2 - i]) {
+  //       tempTimeRange.splice(l-1-i,1);
+  //       alert(l-1-i)
+  //       alert('TimeRange 2 -> '+ tempTimeRange);
+  //       setTimeRange(tempTimeRange)
+  //       break;
+  //     }
+  //   }
+  // }, [timeRange])
 
-  console.log('Dates', dates);
-  console.log('MarkedDates', markedDates);
+  useEffect(() => console.log("TImeRange -> ", timeRange), [timeRange]);
 
   const onChange = useCallback(
     (val) => {
+      if (val.length > value.length) setOpen(true);
+      else {
+        let l = value.length;
+        var tempTimeRange = [...timeRange];
+        alert("TempTimeRange -> " + tempTimeRange);
+        for (let i = 0; i < l; i++) {
+          console.log("Loop Started");
+          // console.log(val, value);
+          // console.log(val[i], value[i]);
+          // console.log(tempTimeRange);
+          if (value[i] !== val[i]) {
+            tempTimeRange.splice(i, 1);
+            alert(i);
+            alert("Timerange 1-> " + tempTimeRange);
+            setTimeRange(tempTimeRange);
+            break;
+          }
+          if (value[l - 1 - i] !== val[l - 2 - i]) {
+            tempTimeRange.splice(l - 1 - i, 1);
+            alert(l - 1 - i);
+            alert("TimeRange 2 -> " + tempTimeRange);
+            setTimeRange(tempTimeRange);
+            break;
+          }
+        }
+      }
       setValue(val);
     },
-    [setValue]
+    [value, setValue, timeRange]
   );
 
-  useEffect(() => {
-    setWidth(window.innerWidth);
-    console.log(window.innerWidth);
-  }, [window.innerWidth]);
+  // useEffect(() => {
+  //   console.log(valueLength);
+  //   if (valueLength < value.length) {
+  //     setValueLength(value.length);
+  //     console.log("New Date is Clicked");
+  //     handleClickOpen();
+  //   } else setValueLength(value.length);
+  // }, [value]);
 
-  useEffect(() => {
-    console.log(valueLength);
-    if (valueLength < value.length) {
-      setValueLength(value.length);
-      console.log("New Date is Clicked");
-      handleClickOpen();
-    }
-    else  setValueLength(value.length);
-    
-  }, [value]);
-
-  console.log('Value' , value);
+  // console.log("Value", value);
+  // console.log("Dates -> ", dates);
 
   const handleSubmit = function (event) {
     axios
-      .post("http://localhost:4000/attendence", { value: value, email: email, timeRange: timeRange })
+      .post("http://localhost:4000/attendence", {
+        value: value,
+        email: email,
+        timeRange: timeRange,
+      })
       .then((res) => {
         console.log(res);
-        dates = [...dates, value]
-        setValue([]);
-        setTimeRange([])
+        for (let i = 0; i < value.length; i++) {
+          dates.push(new Date(value[i]));
+        }
+        timeRangeArr = [...timeRangeArr, ...timeRange];
+
+        Promise.all([
+          localStorage.setItem("attendenceDatesArr", JSON.stringify(dates)),
+          localStorage.setItem("timeRangeArr", JSON.stringify(timeRangeArr)),
+        ]).then(() => {
+          setValue([]);
+          setTimeRange([]);
+        });
       })
       .catch((error) => console.log(error));
   };
 
-  const isHighlight = useCallback((date) => {
-    for (let i = 0; i < markedDates.length; i++)
-      if (markedDates[i].getTime() == date.getTime()) return true;
-  }, [dates]);
+  const isHighlight = useCallback(
+    (date) => {
+      for (let i = 0; i < dates.length; i++)
+        if (new Date(dates[i]).getTime() == date.getTime()) return true;
+    },
+    [dates]
+  );
 
-  function handleChange(time, timeString) {
-    setTimeRange([...timeRange, timeString])
-  }
+  const handleChange = (time, timeString) => {
+    setTimeRange([...timeRange, timeString]);
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
 
   return (
     <>
       <div className="container-fluid" style={{ textAlign: "center" }}>
         <div className="outer-box bg-gradient p-3">
           <div className="calender" style={{ padding: "40px 0px" }}>
-            <h1
-              className="py-3"
-              style={{
-                fontSize: "30px",
-                fontFamily: "cursive",
-                fontWeight: "700",
-                color: "white",
-              }}
-            >
-              Hi {name}, Please mark your attendence
-            </h1>
+            <div className="container header-div">
+              <h1
+                className="py-3"
+                style={{
+                  fontSize: "30px",
+                  fontFamily: "cursive",
+                  fontWeight: "700",
+                  color: "white",
+                }}
+              >
+                Hi {name}, Please mark your attendence
+              </h1>
+              <button className="logout-btn" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+
             <div className="d-flex flex-row">
               <Attendence_list />
               <Calendar
@@ -124,7 +190,7 @@ const UserDetails = () => {
                 value={value}
                 onChange={onChange}
               />
-              {/* <Attendence_list /> */}
+              <NewMarkedList value={value} timeRange={timeRange} />
             </div>
           </div>
           <button className="btn btn-lg btn-danger" onClick={handleSubmit}>
@@ -169,24 +235,3 @@ const UserDetails = () => {
 };
 
 export default UserDetails;
-
-// import React, { useState } from 'react';
-// import './index.css';
-// import { Space, TimePicker } from 'antd';
-// import dayjs from 'dayjs';
-
-//   function handleChange(timeString) {
-//     console.log(timeString);
-//   }
-
-//   const format = "HH:mm"
-
-// const App = () =>
-//       <TimePicker.RangePicker
-//         onChange={handleChange}
-//         status="error"
-//         variant="filled"
-//         format={format}
-//         changeOnScroll
-//       />;
-// export default App;

@@ -1,11 +1,41 @@
-import React from "react";
-import './Attendence_list.sass'
+import React, { useEffect, useState } from "react";
+import "./Attendence_list.sass";
 
-export default function attendence_list() {
+export default function Attendence_list() {
+  var markedDates = JSON.parse(localStorage.getItem("attendenceDatesArr")) || [];
+  // console.log("MarkedDates -> ", markedDates);
+
+  var timeRangeArr = JSON.parse(localStorage.getItem("timeRangeArr")) || [];
+  // console.log("TimeRangeArr", timeRangeArr);
+
+  // Format the date
+  const options = { day: "2-digit", month: "long", year: "numeric" };
+
   return (
-    <div className="container">
-      <ol className="style_1" style={{textAlign: 'left', fontSize: '14px', fontWeight: '100', color: '#fff2f285'}}>
-		<li>Item 1</li>
+    <div className="container" style={{overflowY: 'scroll', maxHeight: '420px'}}>
+      <ol
+        className="style_1"
+        style={{
+          textAlign: "left",
+          fontSize: "14px",
+          fontWeight: "100",
+          color: "#fff2f285",
+        }}
+      >
+        {markedDates.map((date, index) => (
+          <li key={index}>
+            {new Date(date).toLocaleDateString("en-GB", options)}
+            <br />
+            <small>
+              {timeRangeArr && timeRangeArr[index] && (
+                <>
+                  {timeRangeArr[index][0]} - {timeRangeArr[index][1]}
+                </>
+              )}
+            </small>
+          </li>
+        ))}
+        {/* <li>Item 1</li>
 		<li>Item 2</li>
 		<li>Item 3<br/>
 			<small>
@@ -21,8 +51,8 @@ export default function attendence_list() {
 			</ol>
 		</li>
 		<li>More Item 6</li>
-		<li>More Item 7</li>
-	</ol>
+		<li>More Item 7</li> */}
+      </ol>
     </div>
   );
 }

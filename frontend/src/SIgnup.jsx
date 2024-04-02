@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -26,11 +26,10 @@ const Signup = () => {
     setError(Validate(user));
   };
 
-  // const userDetails = {
-  //     email: email,
-  //     password: password,
-  //     name: name
-  // };
+  useEffect(() => {
+    if(localStorage.getItem('isAuthenticated') === 'true') navigate('/');
+    else  navigate('/signup')
+  },[])
 
   const handleSubmit = function (event) {
     event.preventDefault();
@@ -38,11 +37,13 @@ const Signup = () => {
       axios
         .post("http://localhost:4000/signup", user)
         .then((res) => {
-          console.log("Response:", res);
-          console.log(res.data[0].iduser);
-          navigate('/user', {state: {name: res.data[0].name}})
+          localStorage.setItem('isAuthenticated', true)
+          localStorage.setItem('name', user.name)
+          localStorage.setItem('email', user.email)
+          navigate('/')
         })
         .catch((error) => {
+          localStorage.setItem('isAuthenticated', false)
           console.log("Error:", error);
         });
     }
@@ -136,7 +137,7 @@ const Signup = () => {
             Already a user?
           </p>
           <Link
-            to="/"
+            to="/login"
             style={{
               display: "flex",
               alignItems: "end",

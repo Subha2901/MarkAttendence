@@ -7,12 +7,41 @@
     color: #fff;
 }
 
+.header-div {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+.header-div h1{
+    flex-grow: 2;
+}
 
-@media screen and (min-width: 785px) {
+.logout-btn{
+    background: #9d1c29;
+    border: solid #b02a37 !important;
+    border-width: 1px 2px 2px 1px !important;
+    border-radius: 10%;
+    padding: 3px 8px;
+    color: #eec4c4;
+    font-family: cursive;
+    font-size: 14px;
+    cursor: pointer;
+    transition: .5s ease;
+}
+.logout-btn:hover{
+    background-color: #bb2d3b;
+    border-color: #6d1a22 !important;
+    
+}
+
+
+/* @media screen and (min-width: 785px) {
     .outer-box{
         margin: 0% 20%;
     }
-}
+} */
 
 .react-timerange-picker__clock {
     inset:  auto auto 100% 0px !important;
