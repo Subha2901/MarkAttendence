@@ -1,0 +1,39 @@
+.navbar-div{
+    display: flex;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    /* min-height: 60px; */
+}
+
+.navbar{
+    margin: 20px 0px;
+    justify-content: center !important;
+}
+
+/* .navbar-div .container-fluid{
+    margin: 20px 0px 20px 30%;
+} */
+
+.navbar-brand{
+    min-width: 700px;
+}
+
+.navbar-nav{
+    margin: 10px 0px 10px 4em;
+}
+
+.navbar-brand img{
+    margin-right: 10px;
+    height: 40px;
+    border-radius: 20%;
+    box-shadow: 0px 2px 10px -1px rgba(210,200, 2480.1);
+}
+
+.navbar-brand span{
+    color: white;
+    font-size: 25px;
+    font-weight: 500;
+    font-family: cursive;
+    width: fit-content;
+}

@@ -27,9 +27,21 @@ const Signup = () => {
   };
 
   useEffect(() => {
-    if(localStorage.getItem('isAuthenticated') === 'true') navigate('/');
-    else  navigate('/signup')
-  },[])
+    document.title = 'MarkAttendence - SignUp'
+    if (
+      sessionStorage.getItem("isAuthenticated") === "true" ||
+      localStorage.getItem("isAuthenticated") === "true"
+    ) {
+      navigate("/");
+      if(sessionStorage.length === 0){
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          const value = localStorage.getItem(key);
+          sessionStorage.setItem(key, value);
+        }
+      }
+    }
+  }, []);
 
   const handleSubmit = function (event) {
     event.preventDefault();
@@ -37,13 +49,13 @@ const Signup = () => {
       axios
         .post("http://localhost:4000/signup", user)
         .then((res) => {
-          localStorage.setItem('isAuthenticated', true)
-          localStorage.setItem('name', user.name)
-          localStorage.setItem('email', user.email)
+          sessionStorage.setItem('isAuthenticated', true)
+          sessionStorage.setItem('name', user.name)
+          sessionStorage.setItem('email', user.email)
           navigate('/')
         })
         .catch((error) => {
-          localStorage.setItem('isAuthenticated', false)
+          sessionStorage.setItem('isAuthenticated', false)
           console.log("Error:", error);
         });
     }

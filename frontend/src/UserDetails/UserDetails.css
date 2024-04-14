@@ -1,6 +1,6 @@
-.rc_highlight button {
+.rc_highlight .rc_body-cell_value {
     background-color: #15f90033 !important;
-    border-radius: 20%;
+    /* border-radius: 20%; */
 }
 
 .rc_disabled {
@@ -18,7 +18,11 @@
     flex-grow: 2;
 }
 
-.logout-btn{
+.calender{
+    padding: 40px 0px;
+}
+
+/* .logout-btn{
     background: #9d1c29;
     border: solid #b02a37 !important;
     border-width: 1px 2px 2px 1px !important;
@@ -34,8 +38,26 @@
     background-color: #bb2d3b;
     border-color: #6d1a22 !important;
     
+} */
+
+.outer-box{
+    background-image: linear-gradient(#004C4C, black) !important;
+    border-radius: 5%;
+    padding: 2rem 1.5rem 3.5rem;
+    margin-top: 7rem;
 }
 
+/* FOr Claender style */
+.rc_root.rc_dark{
+    border: solid white 0.5px;
+    background-color: #000000a1;
+}
+
+/* Highlighted date in Calender */
+.rc_body-days-of-month .rc_body-cell.rc_disabled .rc_body-cell_value button:before{
+    width: 0px !important;
+    transform: none !important;
+}
 
 /* @media screen and (min-width: 785px) {
     .outer-box{
@@ -43,11 +65,11 @@
     }
 } */
 
-.react-timerange-picker__clock {
+/* .react-timerange-picker__clock {
     inset:  auto auto 100% 0px !important;
     border-radius: 10%;
     border:  thick double #004C4C !important;
-}
+} */
 
 .css-1t1j96h-MuiPaper-root-MuiDialog-paper, .css-ypiqx9-MuiDialogContent-root{
     overflow-y: visible !important;

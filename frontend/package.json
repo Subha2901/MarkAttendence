@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.14",
     "@mui/x-date-pickers": "^7.0.0",
     "@natscale/react-calendar": "^0.0.0-beta.26",
@@ -15,13 +16,18 @@
     "antd": "^5.15.4",
     "axios": "^1.6.7",
     "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
     "dayjs": "^1.11.10",
+    "grapheme-splitter": "^1.0.4",
     "react": "^18.2.0",
     "react-clock": "^4.6.0",
+    "react-custom-scroll": "^7.0.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.2",
     "react-scripts": "5.0.1",
+    "react-tooltip": "^5.26.3",
     "sass": "^1.72.0",
+    "typewriter-effect": "^2.21.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

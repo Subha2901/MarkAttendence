@@ -16,58 +16,58 @@ import NewMarkedList from "../NewMarkedList/NewMarkedList";
 const UserDetails = () => {
   // const [width, setWidth] = useState(window.innerWidth);
   // const location = useLocation();
-  const name = localStorage.getItem("name");
-  const email = localStorage.getItem("email");
-  var dates = JSON.parse(localStorage.getItem("attendenceDatesArr")) || [];
-  var timeRangeArr = JSON.parse(localStorage.getItem("timeRangeArr")) || [];
+  const name = sessionStorage.getItem("name");
+  const email = sessionStorage.getItem("email");
+  var dates = JSON.parse(sessionStorage.getItem("attendenceDatesArr")) || [];
+  var timeRangeArr = JSON.parse(sessionStorage.getItem("timeRangeArr")) || [];
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
-  const [valueLength, setValueLength] = useState(value.length);
+  // const checked = location.state && location.state.checked
+  // const [valueLength, setValueLength] = useState(value.length);
   const [timeRange, setTimeRange] = useState([]);
   const navigate = useNavigate();
+  const [index, setIndex] = useState(0);
+
+  if (sessionStorage.length === 0 && localStorage.length != 0) {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      const value = localStorage.getItem(key);
+      sessionStorage.setItem(key, value);
+    }
+  }
+
+  useEffect(() => {document.title = `MarkAttendence - ${name}`; console.log('UserDetails render');}, null)
+
+  // useEffect(() => {
+  //   setIndex(index + 1);
+  // }, [sessionStorage.getItem("attendenceDatesArr")]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+      if(localStorage.length !== 0){
+        for (let i = 0; i < sessionStorage.length; i++) {
+          const key = sessionStorage.key(i);
+          const value = sessionStorage.getItem(key);
+          localStorage.setItem(key, value);
+        }
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   const format = "HH:mm";
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   const handleCancelPopup = useCallback(() => {
     setValue(value.slice(0, -1));
     setOpen(false);
   }, [value]);
 
-  const handleSubmitPopup = useCallback(() => {
-    setOpen(false);
-  }, []);
-
-  // const updateTimeRange = useCallback((val) => {
-  //   let l = value.length;
-  //   var tempTimeRange = [...timeRange];
-  //   alert('TempTimeRange -> '+ tempTimeRange);
-  //   for (let i = 0; i < l; i++) {
-  //     console.log('Loop Started');
-  //     // console.log(val, value);
-  //     // console.log(val[i], value[i]);
-  //     // console.log(tempTimeRange);
-  //     if (value[i] !== val[i]) {
-  //       tempTimeRange.splice(i,1);
-  //       alert(i)
-  //       alert('Timerange 1-> '+ tempTimeRange);
-  //       setTimeRange(tempTimeRange)
-  //       break;
-  //     }
-  //     if (value[l - 1 - i] !== val[l - 2 - i]) {
-  //       tempTimeRange.splice(l-1-i,1);
-  //       alert(l-1-i)
-  //       alert('TimeRange 2 -> '+ tempTimeRange);
-  //       setTimeRange(tempTimeRange)
-  //       break;
-  //     }
-  //   }
-  // }, [timeRange])
-
-  useEffect(() => console.log("TImeRange -> ", timeRange), [timeRange]);
+  // useEffect(() => console.log("TImeRange -> ", timeRange), [timeRange]);
 
   const onChange = useCallback(
     (val) => {
@@ -78,9 +78,6 @@ const UserDetails = () => {
         alert("TempTimeRange -> " + tempTimeRange);
         for (let i = 0; i < l; i++) {
           console.log("Loop Started");
-          // console.log(val, value);
-          // console.log(val[i], value[i]);
-          // console.log(tempTimeRange);
           if (value[i] !== val[i]) {
             tempTimeRange.splice(i, 1);
             alert(i);
@@ -102,18 +99,6 @@ const UserDetails = () => {
     [value, setValue, timeRange]
   );
 
-  // useEffect(() => {
-  //   console.log(valueLength);
-  //   if (valueLength < value.length) {
-  //     setValueLength(value.length);
-  //     console.log("New Date is Clicked");
-  //     handleClickOpen();
-  //   } else setValueLength(value.length);
-  // }, [value]);
-
-  // console.log("Value", value);
-  // console.log("Dates -> ", dates);
-
   const handleSubmit = function (event) {
     axios
       .post("http://localhost:4000/attendence", {
@@ -129,8 +114,8 @@ const UserDetails = () => {
         timeRangeArr = [...timeRangeArr, ...timeRange];
 
         Promise.all([
-          localStorage.setItem("attendenceDatesArr", JSON.stringify(dates)),
-          localStorage.setItem("timeRangeArr", JSON.stringify(timeRangeArr)),
+          sessionStorage.setItem("attendenceDatesArr", JSON.stringify(dates)),
+          sessionStorage.setItem("timeRangeArr", JSON.stringify(timeRangeArr)),
         ]).then(() => {
           setValue([]);
           setTimeRange([]);
@@ -147,11 +132,8 @@ const UserDetails = () => {
     [dates]
   );
 
-  const handleChange = (time, timeString) => {
-    setTimeRange([...timeRange, timeString]);
-  };
-
   const handleLogout = () => {
+    sessionStorage.clear();
     localStorage.clear();
     navigate("/login");
   };
@@ -159,9 +141,9 @@ const UserDetails = () => {
   return (
     <>
       <div className="container-fluid" style={{ textAlign: "center" }}>
-        <div className="outer-box bg-gradient p-3">
-          <div className="calender" style={{ padding: "40px 0px" }}>
-            <div className="container header-div">
+        <div className="outer-box container-fluid">
+          <div className="calender container-fluid">
+            {/* <div className="container header-div">
               <h1
                 className="py-3"
                 style={{
@@ -176,11 +158,12 @@ const UserDetails = () => {
               <button className="logout-btn" onClick={handleLogout}>
                 Logout
               </button>
-            </div>
+            </div> */}
 
             <div className="d-flex flex-row">
-              <Attendence_list />
+              <Attendence_list setIndex={setIndex} index={index} />
               <Calendar
+                key={index}
                 isDisabled={isHighlight}
                 isHighlight={isHighlight}
                 useDarkMode
@@ -205,18 +188,17 @@ const UserDetails = () => {
             component: "form",
             onSubmit: (event) => {
               event.preventDefault();
-              const formData = new FormData(event.currentTarget);
-              const formJson = Object.fromEntries(formData.entries());
-              const email = formJson.email;
-              console.log(email);
-              handleSubmitPopup();
+              setTimeRange([
+                ...timeRange,
+                [event.target[0].value, event.target[1].value],
+              ]);
+              setOpen(false);
             },
           }}
         >
-          <DialogTitle>Subscribe</DialogTitle>
+          <DialogTitle>Select the duration of attendence: </DialogTitle>
           <DialogContent>
             <TimePicker.RangePicker
-              onChange={handleChange}
               status="error"
               variant="filled"
               format={format}
@@ -225,7 +207,7 @@ const UserDetails = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCancelPopup}>Cancel</Button>
-            <Button type="submit">Subscribe</Button>
+            <Button type="submit">Submit</Button>
           </DialogActions>
         </Dialog>
         {/* <-- TimePopup --> */}

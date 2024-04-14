@@ -1,93 +1,172 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import "./Login.css";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import Validate from "./LoginValidation";
+import Icon from "./Icon";
 
-const Login = () => {
+const Login = ({ signin }) => {
   // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
+  const [passwordInputType, setPasswordInputType] = useState(false);
+  const [cpasswordInputType, setCPasswordInputType] = useState(false);
+  const [checkBox, setCheckBox] = useState(false);
   const [error, setError] = useState({});
+  const [confirmPassword, setConfirmPassword] = useState();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [user, setUser] = useState({
-    email: "",
-    password: "",
-  });
+  const [user, setUser] = useState({});
 
   useEffect(() => {
-    if (localStorage.getItem("isAuthenticated") === 'true') navigate("/");
-    else navigate("/login");
+    const path = location.pathname;
+
+    if (path == "/login") document.title = "MarkAttendence - Login";
+    else document.title = "MarkAttendence - SignIn";
+    console.log('Login render');
+  }, [location]);
+
+  useEffect(() => {
+    if (
+      sessionStorage.getItem("isAuthenticated") === "true" ||
+      localStorage.getItem("isAuthenticated") === "true"
+    ) {
+      navigate("/");
+      if (sessionStorage.length === 0) {
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          const value = localStorage.getItem(key);
+          sessionStorage.setItem(key, value);
+        }
+      }
+    }
   }, []);
 
-  const handleChange = function (event) {
+  useEffect(() => {
+    if (confirmPassword == user.password)
+      setError({ ...error, confirmPassword: "" });
+    else
+      setError({
+        ...error,
+        confirmPassword: "Password and COnfirm password is not same",
+      });
+  }, [confirmPassword]);
+
+  const handleChange = function (e) {
     setUser({
       ...user,
-      [event.target.name]: [event.target.value],
+      [e.target.name]: e.target.value,
     });
 
-    setError(Validate(user));
+    setError({ ...error, password: Validate(user) });
   };
-
-  // const userDetails = {
-  //   email: email,
-  //   password: password,
-  // };
 
   const handleSubmit = function (event) {
     event.preventDefault();
-    if (error.email == "" && error.password == "") {
-      axios
-        .post("http://localhost:4000/login", user)
-        .then((res) => {
-          console.log(res);
+    if (error.password == "") {
+      if (!signin) {
+        axios
+          .post("http://localhost:4000/login", user)
+          .then((res) => {
+            console.log(res);
 
-          const data = res.data;
-          const dates = data.dateDetails;
+            const data = res.data;
+            const dates = data.dateDetails;
 
-          var attendenceDatesArr = [];
-          var timeRangeArr = [];
+            var attendenceDatesArr = [];
+            var timeRangeArr = [];
 
-          // console.log(dates[0].DATE);
-          // console.log(dates[0].START_TIME);
-          // console.log(dates[0].END_TIME);
-  
+            // console.log(dates[0].DATE);
+            // console.log(dates[0].START_TIME);
+            // console.log(dates[0].END_TIME);
 
-          for (let i = 0; i < dates.length; i++) {
-            attendenceDatesArr[i] = new Date(dates[i].DATE);
-            timeRangeArr[i] = ([dates[i].START_TIME, dates[i].END_TIME ]);
-            // timeRangeArr[i][1] = dates[i].END_TIME;
-          }
+            for (let i = 0; i < dates.length; i++) {
+              attendenceDatesArr[i] = new Date(dates[i].DATE);
+              timeRangeArr[i] = [dates[i].START_TIME, dates[i].END_TIME];
+              // timeRangeArr[i][1] = dates[i].END_TIME;
+            }
 
-          localStorage.setItem("isAuthenticated", true);
-          localStorage.setItem("name", data.data[0].NAME);
-          localStorage.setItem("email", data.data[0].IDUSER);
-          localStorage.setItem(
-            "attendenceDatesArr",
-            JSON.stringify(attendenceDatesArr)
-          );
-          localStorage.setItem("timeRangeArr", JSON.stringify(timeRangeArr));
-          navigate("/");
-        })
-        .catch((error) => {
-          localStorage.setItem("isAuthenticated", false);
-          console.log("Error:", error);
-        });
+            if (checkBox) {
+              localStorage.setItem("isAuthenticated", true);
+              localStorage.setItem("name", data.data[0].NAME);
+              localStorage.setItem("email", data.data[0].IDUSER);
+              localStorage.setItem(
+                "attendenceDatesArr",
+                JSON.stringify(attendenceDatesArr)
+              );
+              localStorage.setItem(
+                "timeRangeArr",
+                JSON.stringify(timeRangeArr)
+              );
+            }
+
+            //NewEdit
+            sessionStorage.setItem("isAuthenticated", true);
+            sessionStorage.setItem("name", data.data[0].NAME);
+            sessionStorage.setItem("email", data.data[0].IDUSER);
+            sessionStorage.setItem(
+              "attendenceDatesArr",
+              JSON.stringify(attendenceDatesArr)
+            );
+            sessionStorage.setItem(
+              "timeRangeArr",
+              JSON.stringify(timeRangeArr)
+            );
+            //NewEdit
+
+            navigate("/");
+          })
+          .catch((error) => {
+            sessionStorage.setItem("isAuthenticated", false);
+            console.log("Error:", error);
+            setError({
+              password:
+                "Please enter the correct USERNAME PASSWORD combination.",
+            });
+          });
+      } else {
+        axios
+          .post("http://localhost:4000/signup", user)
+          .then((res) => {
+            sessionStorage.setItem("isAuthenticated", true);
+            sessionStorage.setItem("name", user.name);
+            sessionStorage.setItem("email", user.email);
+            navigate("/");
+          })
+          .catch((error) => {
+            sessionStorage.setItem("isAuthenticated", false);
+            console.log("Error:", error);
+          });
+      }
     } else alert("Please enter valid input");
   };
 
-  // const handleLogout = function(event){
-  //     axios.post('http://localhost:4000/logout')
-  //         .then(res => console.log(res))
-  //         .then(err => console.log(err))
-  // }
+  const handleCheckBox = useCallback(
+    (event) => setCheckBox(event.target.checked),
+    [checkBox, setCheckBox]
+  );
 
   return (
-    <div className="login-div container bg-gradient">
+    <div className="login-div container">
       <p className="h1 mt-3" style={{ alignContent: "center" }}>
         Please Sign In
       </p>
       <form onSubmit={handleSubmit}>
+        {signin && (
+          <div className="mb-3">
+            <label htmlFor="exampleInputName1" className="form-label">
+              Full Name
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="exampleInputName1"
+              placeholder="Enter Name"
+              name="name"
+              value={user.name}
+              onChange={handleChange}
+            />
+          </div>
+        )}
         <div className="mb-3">
           <label htmlFor="exampleInputEmail1" className="form-label">
             Email address
@@ -96,60 +175,95 @@ const Login = () => {
             type="email"
             className="form-control"
             id="exampleInputEmail1"
-            aria-describedby="emailHelp"
+            // aria-describedby="emailHelp"
             placeholder="Enter Email"
             name="email"
             value={user.email}
             onChange={handleChange}
             required
           />
-          <div id="emailHelp" className="form-text">
-            {error.email}
-          </div>
+          {/* <div className="form-text invalid-feedback">{error.email}</div> */}
         </div>
         <div className="mb-3">
           <label htmlFor="exampleInputPassword1" className="form-label">
-            Password
+            {signin ? "New Psssword" : "Password"}
           </label>
           <input
-            type="password"
-            className="form-control"
+            type={passwordInputType ? "text" : "password"}
+            className={`form-control ${error.password ? "is-invalid" : ""}`}
             id="exampleInputPassword1"
+            aria-describedby="emailHelp"
             placeholder="Enter password"
-            aria-describedby="passwordHelp"
             name="password"
             value={user.password}
             onChange={handleChange}
             required
           />
-          <div id="passwordHelp" className="form-text">
+          <Icon
+            inputType={passwordInputType}
+            setInputType={setPasswordInputType}
+          />
+
+          <div id="passwordHelp" className="form-text invalid-feedback">
             {error.password}
           </div>
+          {!signin && (
+            <div id="emailHelp">
+              <NavLink to="/forgotpassword">Forgot Password? </NavLink>
+            </div>
+          )}
         </div>
+        {signin && (
+          <div className="mb-3">
+            <label htmlFor="exampleInputPassword1" className="form-label">
+              Confirm Password
+            </label>
+            <input
+              type={cpasswordInputType ? "text" : "password"}
+              className={`form-control ${
+                error.confirmPassword ? "is-invalid" : ""
+              }`}
+              id="exampleInputPassword2"
+              aria-describedby="emailHelp"
+              placeholder="Enter password"
+              name="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+            <Icon
+              inputType={cpasswordInputType}
+              setInputType={setCPasswordInputType}
+            />
 
-        <div
-          className="mb-3 form-check"
-          style={{ fontSize: "20px", paddingTop: "10px" }}
-        >
+            <div id="passwordHelp" className="form-text invalid-feedback">
+              {error.confirmPassword}
+            </div>
+          </div>
+        )}
+        <div className="mb-3 form-check" style={{ fontSize: "20px" }}>
           <input
             type="checkbox"
             className="form-check-input"
             id="exampleCheck1"
+            checked={checkBox}
+            onChange={handleCheckBox}
+            required={signin ? true : false}
           />
           <label className="form-check-label" htmlFor="exampleCheck1">
-            Remember me
+            {signin ? "Aceept all the terms and organization" : "Remember me"}
           </label>
         </div>
         <div className="container signup-div">
           <button type="submit" className="btn btn-primary btn-lg my-3">
-            Login
+            {signin ? "SIgnUP" : "Login"}
           </button>
 
           <p className="fst-normal" style={{ margin: "40px 0px 0px 20px" }}>
-            Already a user?
+            {signin ? "Already a user?" : "New User"}
           </p>
-          <Link
-            to="/signup"
+          <NavLink
+            to={signin ? "/login" : "/signup"}
             style={{
               display: "flex",
               alignItems: "end",
@@ -157,8 +271,10 @@ const Login = () => {
               textDecoration: "none",
             }}
           >
-            <button className="btn btn-warning">SignUp</button>
-          </Link>
+            <button className="btn btn-warning">
+              {signin ? "Login" : "SignUp"}
+            </button>
+          </NavLink>
         </div>
       </form>
     </div>

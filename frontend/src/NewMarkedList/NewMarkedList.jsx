@@ -1,5 +1,6 @@
 import React from "react";
 import "./NewMarkedList.sass";
+import { CustomScroll } from "react-custom-scroll";
 
 const NewMarkedList = ({ value, timeRange }) => {
   // Format the date
@@ -22,28 +23,33 @@ const NewMarkedList = ({ value, timeRange }) => {
     <div
       className="container"
       style={{
-        display: "flex",
-        flexDirection: "column-reverse",
-        paddingLeft: "30px",
+        maxHeight: "420px",
+        minWidth: '170px'
       }}
     >
-      <ol
-        className="style_1"
-        style={{
-          textAlign: "left",
-          fontSize: "14px",
-          fontWeight: "100",
-          color: "#fff2f285",
-        }}
+      <CustomScroll
+        heightRelativeToParent="calc(100% - 20px)"
+        style={{ display: "flex", flexDirection: "column-reverse !important" }}
       >
-        {formattedValue.map((item, index) => (
-          <li key={index}>
-            {item.date}
-            {item.timeRange && <br />}
-            {item.timeRange && <small>{item.timeRange}</small>}
-          </li>
-        ))}
-      </ol>
+        <ol
+          className="style_1"
+          style={{
+            textAlign: "left",
+            fontSize: "14px",
+            fontWeight: "100",
+            color: "#fff2f285",
+            paddingLeft: "45px"
+          }}
+        >
+          {formattedValue.map((item, index) => (
+            <li key={index}>
+              {item.date}
+              {item.timeRange && <br />}
+              {item.timeRange && <small>{item.timeRange}</small>}
+            </li>
+          ))}
+        </ol>
+      </CustomScroll>
     </div>
   );
 };
