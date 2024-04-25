@@ -1,7 +1,13 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import "./Navbar.css";
 import Logo from "../Images/Logo.png";
-import { useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
@@ -16,6 +22,7 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import LoginIcon from "@mui/icons-material/Login";
 import CustomTypeWriter from "../CustomTypepWriter/CustomTypeWriter";
+import { UserProfileContext } from "../App";
 
 const Navbar = () => {
   const location = useLocation();
@@ -24,12 +31,13 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
+  const { setProfileVisible, profileVisible } = useContext(UserProfileContext);
 
   useEffect(() => {
     const path = location.pathname;
     console.log(path);
 
-    if (path === "/login" || path === "/signup") {
+    if (path == "/login" || path == "/signup") {
       setSignin(false);
     } else {
       setSignin(true);
@@ -40,6 +48,7 @@ const Navbar = () => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = (name) => {
     console.log(name);
     setAnchorEl(null);
@@ -47,19 +56,29 @@ const Navbar = () => {
     if (name == "logout") {
       sessionStorage.clear();
       localStorage.clear();
+      setSignin(false);
       navigate("/login");
     } else if (name == "login") {
       navigate("/login");
     } else if (name == "signup") {
       navigate("/signup");
     } else if (name == "about") {
+      const element = document.getElementById('about');
+      if(element){
+        element.scrollIntoView({behavior: "smooth"})
+      }
     } else if (name == "userdetails") {
+      setProfileVisible(!profileVisible);
+      const element = document.getElementById('about');
+      if(element){
+        element.scrollIntoView({behavior: "smooth"})
+      }
     }
   };
 
   return (
-    <div className="container-fluid navbar-div">
-      <nav className="navbar fixed-top">
+    <div className="container navbar-div">
+      <nav className="navbar">
         <div className="navbar-brand">
           <div className="container ">
             <img src={Logo} alt="Website Logo" />
@@ -80,9 +99,8 @@ const Navbar = () => {
                 aria-expanded={open ? "true" : undefined}
               >
                 <Avatar sx={{ width: 32, height: 32 }}>
-                  {name.substring(0, 1)}
+                  {name && name.substring(0, 1)}
                 </Avatar>
-                
               </IconButton>
             </Tooltip>
           </Box>
@@ -122,19 +140,16 @@ const Navbar = () => {
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
             {signin && (
-              <MenuItem
-                name="userdetails"
-                onClick={() => handleClose("userdetails")}
-              >
-                <ListItemIcon>
-                  <AccountCircleIcon fontSize="medium" />
-                </ListItemIcon>
-                My Account
-              </MenuItem>
+                <MenuItem
+                  name="userdetails"
+                  onClick={() => handleClose("userdetails")}
+                >
+                  <ListItemIcon>
+                    <AccountCircleIcon fontSize="medium" />
+                  </ListItemIcon>
+                  My Account
+                </MenuItem>
             )}
-            {/* <MenuItem onClick={() => handleClose('')}>
-              <Avatar /> My account
-            </MenuItem> */}
             {signin && <Divider />}
             {!signin && (
               <MenuItem name="login" onClick={() => handleClose("login")}>
@@ -153,12 +168,12 @@ const Navbar = () => {
               </MenuItem>
             )}
             {!signin && <Divider />}
-            <MenuItem name="about" onClick={() => handleClose("about")}>
-              <ListItemIcon>
-                <Settings fontSize="small" />
-              </ListItemIcon>
-              About US
-            </MenuItem>
+              <MenuItem name="about" onClick={() => handleClose("about")}>
+                <ListItemIcon>
+                  <Settings fontSize="small" />
+                </ListItemIcon>
+                About US
+              </MenuItem>
             {signin && (
               <MenuItem name="logout" onClick={() => handleClose("logout")}>
                 <ListItemIcon>

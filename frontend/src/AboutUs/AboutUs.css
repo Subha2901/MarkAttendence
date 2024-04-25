@@ -1,0 +1,51 @@
+.about-us{
+    margin: 20px;
+    display: flex;
+    padding: 0px 200px;
+    justify-content: baseline;
+    align-items: baseline;
+    /* background-image: linear-gradient(transparent, white, transparent); */
+}
+
+.about-text-div{
+    font-size: 16px;
+    font-weight: 600;
+    font-family: monospace;
+    color: wheat;
+    margin: 60px;
+    width: 60%;
+}
+
+.about-img-div{
+    margin: 0px 60px;
+}
+
+.about-img{
+    height: 300px;
+    border-radius: 10%;
+    box-shadow:rgb(152 188 161 / 21%) 193px 16px 129px -2px, rgba(255, 255, 255, 0.5) 0px 23px 10px -12px, rgba(37, 61, 253, 4.35) 0px -59px 0px -54px inset;
+}
+
+.about-heading{
+    font-size: 20px;
+    font-weight: 700;
+    font-family: cursive;
+}
+
+.web-name{
+    font-size: 40px;
+    font-weight: 800;
+    font-family: fangsong;
+    color: white;
+}
+
+.new_logo{
+    position: relative;
+    opacity: 0.1;
+    transition: 0.3s ease-in-out;
+}
+
+.new_logo:hover{
+    opacity: 0.5 !important;
+}
+

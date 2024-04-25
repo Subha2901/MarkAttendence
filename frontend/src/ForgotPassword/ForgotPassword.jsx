@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../Login.css";
 import Icon from "../Icon";
+import './ForgotPassword.css'
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +12,7 @@ const ForgotPassword = () => {
   const [checked, setChecked] = useState(false);
   const [otp, setOtp] = useState("");
   const [inputType, setInputType] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (hasError) setHasError(false);
@@ -19,8 +21,8 @@ const ForgotPassword = () => {
   }, [email]);
 
   useEffect(() => {
-    if(hasError)  setHasError(false)
-  }, [otp])
+    if (hasError) setHasError(false);
+  }, [otp]);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -59,11 +61,14 @@ const ForgotPassword = () => {
         });
     } else {
       axios
-        .post("https://localhost:4000/otpcheck", { otp: otp })
+        .post("http://localhost:4000/otpcheck", { otp: otp })
         .then((res) => {
           if (res.status === 200) {
             setHasError(false);
             setError("");
+            navigate("/changepassword", {
+              state: { email: email, state: true },
+            });
           } else {
             setHasError(true);
             setError("Please enter correct OTP.");
@@ -78,6 +83,13 @@ const ForgotPassword = () => {
 
   function handleOtp(event) {
     setOtp(event.target.value.replace(/\D/g, ""));
+  }
+
+  function resendOTP() {
+    axios
+      .post("http://localhost:4000/resendOTP", { email: email })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   }
 
   return (
@@ -109,6 +121,7 @@ const ForgotPassword = () => {
             <div className="mb-3">
               <label htmlFor="exampleInputOtp" className="form-label">
                 OTP
+                <span className='otp-span' onClick={resendOTP}>Resend OTP</span>
               </label>
               <input
                 type={inputType ? "text" : "password"}

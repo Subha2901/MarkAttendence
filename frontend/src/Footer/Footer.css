@@ -1,0 +1,27 @@
+.footer-div{
+    padding: 100px 50px 20px;
+    color: rgba(240, 248, 255, 0.349);
+}
+
+.contact-div{
+    display: flex;
+    justify-content: center;
+    place-content: center;
+}
+
+.contact-div svg{
+    margin: 0px 10px;
+    cursor: pointer;
+}
+
+.contact-div svg:hover{
+    color: wheat;
+    transform: scale(1.1);
+    transition: 0.1s ease-in-out;
+}
+
+.copyright{
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 100;
+}

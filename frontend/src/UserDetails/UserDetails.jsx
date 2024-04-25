@@ -36,13 +36,13 @@ const UserDetails = () => {
     }
   }
 
-  useEffect(() => {document.title = `MarkAttendence - ${name}`; console.log('UserDetails render');}, null)
-
   // useEffect(() => {
   //   setIndex(index + 1);
   // }, [sessionStorage.getItem("attendenceDatesArr")]);
 
   useEffect(() => {
+    document.title = `MarkAttendence - ${name}`;
+
     const handleBeforeUnload = (event) => {
       event.preventDefault();
       event.returnValue = "";

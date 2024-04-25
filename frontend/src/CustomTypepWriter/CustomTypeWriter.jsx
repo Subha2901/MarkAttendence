@@ -11,15 +11,15 @@ const CustomTypeWriter = ({ userName, signIn }) => {
       delay: 75,
     });
 
-    if (signIn && userName) {
+    if (signIn) {
       typewriter
         .pauseFor(200)
         .typeString(
-          `<span style="color: #77B0AA">-|</span><strong>Hii ${userName}</strong>, Welcome Back!`
+          `<span style="color: #77B0AA">-|</span><strong>Hii ${userName}</strong style="color: #77B0AA">, Welcome to MarkAttendence!`
         )
         .pauseFor(300)
-        .deleteChars(15)
-        .typeString("! Hope you are doing well.")
+        .deleteChars(26)
+        .typeString("<span style='color: #77B0AA'>! Hope you are doing well.</span>")
         .pauseFor(300)
         .deleteAll()
         .typeString(
@@ -44,7 +44,7 @@ const CustomTypeWriter = ({ userName, signIn }) => {
         .pauseFor(10000000)
         .start();
     }
-  }, []);
+  }, [signIn]);
 
   return <span id="CUstom"></span>;
 };
