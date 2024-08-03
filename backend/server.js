@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql");
 const nodemailer = require("nodemailer");
+const bcrypt = require("bcrypt");
 
 const app = express();
 app.use(express.json());
@@ -15,26 +16,26 @@ function generateOTP() {
   return otp;
 }
 
-function sendMail(email){
+function sendMail(email) {
   OTP = generateOTP();
-      const HTMLContent = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2 style="color: #333;">OTP to verify Email for MarkYourAttencence</h2><p style="font-size: 16px;">Your OTP (One-Time Password) for verification is:</p><h1 style="font-size: 36px; color: #007bff; margin-bottom: 20px;">${OTP}</h1><p style="font-size: 14px; color: #666;">This OTP is valid for a single use and should not be shared with anyone.</p><p style="font-size: 14px; color: #666;">If you did not request this OTP, please ignore this email.</p></div>`;
+  const HTMLContent = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2 style="color: #333;">OTP to verify Email for MarkYourAttencence</h2><p style="font-size: 16px;">Your OTP (One-Time Password) for verification is:</p><h1 style="font-size: 36px; color: #007bff; margin-bottom: 20px;">${OTP}</h1><p style="font-size: 14px; color: #666;">This OTP is valid for a single use and should not be shared with anyone.</p><p style="font-size: 14px; color: #666;">If you did not request this OTP, please ignore this email.</p></div>`;
 
-      let mailOptions = {
-        from: "mahajansubha610@gmail.com",
-        to: email,
-        subject: `Email Verfication Code -> ${OTP}`,
-        html: HTMLContent,
-      };
+  let mailOptions = {
+    from: "mahajansubha610@gmail.com",
+    to: email,
+    subject: `Email Verfication Code -> ${OTP}`,
+    html: HTMLContent,
+  };
 
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-          return '404'
-        } else {
-          console.log("Email sent: " + info.response);
-          return '250'
-        }
-      });
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+      return "404";
+    } else {
+      console.log("Email sent: " + info.response);
+      return "250";
+    }
+  });
 }
 
 const transporter = nodemailer.createTransport({
@@ -43,7 +44,7 @@ const transporter = nodemailer.createTransport({
   secure: false, // use SSL
   auth: {
     user: process.env.SenderEMail,
-    pass: process.env.SenderEmailPass
+    pass: process.env.SenderEmailPass,
   },
 });
 
@@ -60,7 +61,7 @@ const dbConfig = {
 const pool = mysql.createPool(dbConfig);
 
 app.get("/", (req, res) => {
-  res.send("Hello");
+  res.send("MarkAttendence Server is running successfully");
 });
 
 app.post("/login", (req, res) => {
@@ -71,10 +72,7 @@ app.post("/login", (req, res) => {
   console.log("Email -> ", email);
   console.log("Password-> ", password);
 
-  const sql = "SELECT IDUSER, NAME FROM USER WHERE IDUSER= ? AND PASSWORD = ?";
-  const dateFetch =
-    "SELECT DATE, START_TIME, END_TIME FROM ATTENDENCE_TABLE WHERE USERID = ?";
-  const values = [email, password];
+  const sql = "SELECT IDUSER, PASSWORD, NAME, ROLE FROM USER WHERE IDUSER= ?";
 
   // Get connection from the pool
   pool.getConnection((err, connection) => {
@@ -86,7 +84,7 @@ app.post("/login", (req, res) => {
     console.log("Connected to MySQL");
 
     // Execute the query
-    connection.query(sql, values, (err, data) => {
+    connection.query(sql, email, (err, data) => {
       connection.release(); // Release the connection back to the pool
 
       if (err) {
@@ -98,6 +96,65 @@ app.post("/login", (req, res) => {
       console.log(data);
 
       if (data.length > 0) {
+        bcrypt.compare(password, data[0].PASSWORD, (err, result) => {
+          if (err) {
+            console.error("Error comparing passwords:", err);
+            return res.status(500).json({ error: "Internal Server Error" });
+          }
+
+          if (result) {
+            console.log("Login successful");
+                return res
+                  .status(200)
+                  .json({data: data });
+              
+          } else {
+            console.log("Invalid password");
+            return res.status(500).json({ error: "Invalid credentials" });
+          }
+        });
+      } else {
+        return res.status(500).json({ error: "Invalid credentials" });
+      }
+    });
+  });
+});
+
+app.post("/user", (req, res) => {
+  //   console.log(req.body);
+
+  const { email } = req.body;
+
+  console.log("Email -> ", email);
+
+  const sql = "SELECT IDUSER, NAME, ROLE FROM USER WHERE IDUSER= ?";
+  const dateFetch =
+    "SELECT DATE, START_TIME, END_TIME, STATUS FROM ATTENDENCE_TABLE WHERE USERID = ?";
+
+  // Get connection from the pool
+  pool.getConnection((err, connection) => {
+    if (err) {
+      console.error("Error getting MySQL connection from pool:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    console.log("Connected to MySQL");
+
+    // Execute the query
+    connection.query(sql, email, (err, data) => {
+      connection.release(); // Release the connection back to the pool
+
+      if (err) {
+        console.error("Error querying MySQL:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      console.log("Login Successful");
+      console.log(data);
+
+      if (data.length > 0) {
+        // if (result) {
+        console.log("Login successful");
         connection.query(dateFetch, email, (err, dateDetails) => {
           if (err) {
             console.error(
@@ -114,11 +171,48 @@ app.post("/login", (req, res) => {
               .json({ dateDetails: dateDetails, data: data });
           }
         });
+        // } else {
+        //   console.log("Invalid password");
+        //   return res.status(500).json({ error: "Invalid credentials" });
+        // }
       } else {
         return res.status(500).json({ error: "Invalid credentials" });
       }
     });
   });
+});
+
+app.post("/alluser", (req, res) => {
+  //   console.log(req.body);
+
+  const { admin } = req.body;
+
+  const sql = "SELECT IDUSER, NAME, ROLE FROM USER";
+  // Get connection from the pool
+  if (admin) {
+    pool.getConnection((err, connection) => {
+      if (err) {
+        console.error("Error getting MySQL connection from pool:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      console.log("Connected to MySQL");
+
+      // Execute the query
+      connection.query(sql, (err, data) => {
+        connection.release(); // Release the connection back to the pool
+
+        if (err) {
+          console.error("Error querying MySQL:", err);
+          return res.status(500).json({ error: "Internal Server Error" });
+        }
+
+        console.log("Admin Connection Successful");
+        console.log(data);
+        return res.status(200).json({ data: data });
+      });
+    });
+  }
 });
 
 app.post("/signup", (req, res) => {
@@ -127,31 +221,39 @@ app.post("/signup", (req, res) => {
   //   console.log(req.body.password);
   //   console.log(req.body.name);
 
-  const sql = "INSERT INTO USER (IDUSER, PASSWORD, NAME) VALUES (?,?,?)";
-  const values = [req.body.email, req.body.password, req.body.name];
-
-  // Get connection from the pool
-  pool.getConnection((err, connection) => {
+  var name = (req.body.name).trim().replace(/\s+/g, ' ');
+  bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
     if (err) {
-      console.error("Error getting MySQL connection from pool:", err);
+      console.error("Error hashing password:", err);
       return res.status(500).json({ error: "Internal Server Error" });
     }
+    const sql =
+      "INSERT INTO USER (IDUSER, PASSWORD, NAME, ROLE) VALUES (?,?,?,?)";
+    const values = [req.body.email, hashedPassword, name, "user"];
 
-    console.log("Connected to MySQL");
-
-    // Execute the query
-    connection.query(sql, values, (err, result) => {
-      connection.release(); // Release the connection back to the pool
-
+    // Get connection from the pool
+    pool.getConnection((err, connection) => {
       if (err) {
-        console.error("Error querying MySQL:", err);
+        console.error("Error getting MySQL connection from pool:", err);
         return res.status(500).json({ error: "Internal Server Error" });
       }
 
-      console.log("Insertion Successful");
-      console.log(result);
+      console.log("Connected to MySQL");
 
-      return res.status(200).json({ message: "User created successfully" });
+      // Execute the query
+      connection.query(sql, values, (err, result) => {
+        connection.release(); // Release the connection back to the pool
+
+        if (err) {
+          console.error("Error querying MySQL:", err);
+          return res.status(500).json({ error: "Internal Server Error" });
+        }
+
+        console.log("Insertion Successful");
+        console.log(result);
+
+        return res.status(200).json({ message: "User created successfully" });
+      });
     });
   });
 });
@@ -290,6 +392,112 @@ app.post("/delete", (req, res) => {
   });
 });
 
+app.post("/approve", (req, res) => {
+  const { email, date } = req.body;
+
+  let inputs = [email, date.substr(0, 8) + (parseInt(date.substr(8, 2)) + 1)];
+  const sql =
+    "UPDATE attendence_table SET status = 'approve', approve_time = NOW() WHERE userid = ? AND DATE(date) = ?";
+
+  // Get connection from the pool
+  pool.getConnection((err, connection) => {
+    if (err) {
+      console.error("Error getting MySQL connection from pool:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    console.log("Connected to MySQL");
+
+    // Execute the query
+    connection.query(sql, inputs, (err, result) => {
+      connection.release(); // Release the connection back to the pool
+
+      if (err) {
+        console.error("Error querying MySQL:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      console.log("Updation Successful");
+      console.log(result);
+
+      return res
+        .status(200)
+        .json({ message: "Attendence updated successfully" });
+    });
+  });
+});
+
+app.post("/namechange", (req, res) => {
+  const { name, email } = req.body;
+
+  let inputs = [name, email];
+  const sql =
+    "update user set name = ? where iduser = ?";
+
+  // Get connection from the pool
+  pool.getConnection((err, connection) => {
+    if (err) {
+      console.error("Error getting MySQL connection from pool:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    console.log("Connected to MySQL");
+
+    // Execute the query
+    connection.query(sql, inputs, (err, result) => {
+      connection.release(); // Release the connection back to the pool
+
+      if (err) {
+        console.error("Error querying MySQL:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      console.log("Updation Successful");
+      console.log(result);
+
+      return res
+        .status(200)
+        .json({ message: "Name updated successfully" });
+    });
+  });
+});
+
+app.post("/reject", (req, res) => {
+  const { email, date } = req.body;
+
+  let inputs = [email, date.substr(0, 8) + (parseInt(date.substr(8, 2)) + 1)];
+  const sql =
+    "UPDATE attendence_table SET status = 'reject', approve_time = NOW() WHERE userid = ? AND DATE(date) = ?";
+
+  // Get connection from the pool
+  pool.getConnection((err, connection) => {
+    if (err) {
+      console.error("Error getting MySQL connection from pool:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    console.log("Connected to MySQL");
+
+    // Execute the query
+    connection.query(sql, inputs, (err, result) => {
+      connection.release(); // Release the connection back to the pool
+
+      if (err) {
+        console.error("Error querying MySQL:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      console.log("Updation Successful");
+      console.log(result);
+
+      return res
+        .status(200)
+        .json({ message: "Attendence updated successfully" });
+    });
+  });
+});
+
+
 app.post("/emailcheck", (req, res) => {
   // console.log(req.body);
   // console.log(req.body.email);
@@ -322,26 +530,28 @@ app.post("/emailcheck", (req, res) => {
           .status(500)
           .json({ error: "This email is not registered with us." });
 
-      const mailStatus = sendMail(email)
-      if(mailStatus == '404'){
-        sendMail(email)
+      const mailStatus = sendMail(email);
+      if (mailStatus == "404") {
+        sendMail(email);
       }
 
-      return res.status(200).json({ error: "OTP send to the verified email address" });
+      return res
+        .status(200)
+        .json({ error: "OTP send to the verified email address" });
     });
   });
 });
 
-app.post('/resendOTP', (req,res) => {
-  const {email} = req.body
+app.post("/resendOTP", (req, res) => {
+  const { email } = req.body;
   OTP = generateOTP();
   const mailStatus = sendMail(email);
-  if(mailStatus == '404'){
-    sendMail(email)
+  if (mailStatus == "404") {
+    sendMail(email);
   }
 
-  return res.status(200)
-})
+  return res.status(200);
+});
 
 app.post("/otpcheck", (req, res) => {
   const { otp } = req.body;

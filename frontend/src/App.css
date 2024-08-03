@@ -1,14 +1,10 @@
-html{
-    scroll-behavior: auto;
-}
-
 .App{
     height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
-    place-content: center;
-    align-items: center;
+    place-content: center !important;
+    align-items: center !important;
     background-color: #004C4C;
     background-image: linear-gradient(black, #004C4C,black, black);
     min-height: 100px;

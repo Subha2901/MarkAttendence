@@ -9,17 +9,21 @@ import ChangePassword from "./ChangePassword";
 import Navbar from "./Navbar/Navbar";
 import AboutUs from "./AboutUs/AboutUs";
 import Footer from "./Footer/Footer";
+import { CustomScroll } from "react-custom-scroll";
+import UserProfile from "./UserProfile/UserProfile";
 
 export const UserProfileContext = createContext(); 
 
 function App() {
   var signin = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   return (
+    
     <div className="container-fluid App">
       <UserProfileContext.Provider
-        value={{ profileVisible, setProfileVisible }}
+        value={{ profileVisible, setProfileVisible, loading, setLoading }}
       >
         <BrowserRouter>
           <Navbar />
@@ -27,7 +31,8 @@ function App() {
             <Route path="/login" element={<Login signin={false} />} />
             <Route path="/signup" element={<Login signin={true} />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
-            <Route path="/" element={<AuthCheck Component={UserDetails} />} />
+            <Route path="/" element={<AuthCheck Component={UserProfile} />} />
+            <Route path="/:username" element={<AuthCheck Component={UserProfile} />} />
             <Route path="/changepassword" element={<ChangePassword />} />
           </Routes>
         </BrowserRouter>
@@ -35,6 +40,7 @@ function App() {
       </UserProfileContext.Provider>
       <Footer />
     </div>
+    
   );
 }
 

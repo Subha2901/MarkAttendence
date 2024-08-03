@@ -26,11 +26,14 @@ const Login = ({ signin }) => {
   }, [location]);
 
   useEffect(() => {
+    console.log('Login UseEffect is runned');
     if (
-      sessionStorage.getItem("isAuthenticated") === "true" ||
-      localStorage.getItem("isAuthenticated") === "true"
+      sessionStorage.getItem("isAuthenticated") == "true" ||
+      localStorage.getItem("isAuthenticated") == "true"
     ) {
-      navigate("/");
+      console.log('in If block');
+      let username = sessionStorage.getItem('email').substr(0,sessionStorage.getItem('email').lastIndexOf('@'))
+      navigate(`/${username}`);
       if (sessionStorage.length === 0) {
         for (let i = 0; i < localStorage.length; i++) {
           const key = localStorage.key(i);
@@ -68,52 +71,22 @@ const Login = ({ signin }) => {
           .post("http://localhost:4000/login", user)
           .then((res) => {
             console.log(res);
-
             const data = res.data;
-            const dates = data.dateDetails;
-
-            var attendenceDatesArr = [];
-            var timeRangeArr = [];
-
-            // console.log(dates[0].DATE);
-            // console.log(dates[0].START_TIME);
-            // console.log(dates[0].END_TIME);
-
-            for (let i = 0; i < dates.length; i++) {
-              attendenceDatesArr[i] = new Date(dates[i].DATE);
-              timeRangeArr[i] = [dates[i].START_TIME, dates[i].END_TIME];
-              // timeRangeArr[i][1] = dates[i].END_TIME;
-            }
 
             if (checkBox) {
               localStorage.setItem("isAuthenticated", true);
-              localStorage.setItem("name", data.data[0].NAME);
+              //localStorage.setItem("name", data.data[0].NAME);
               localStorage.setItem("email", data.data[0].IDUSER);
-              localStorage.setItem(
-                "attendenceDatesArr",
-                JSON.stringify(attendenceDatesArr)
-              );
-              localStorage.setItem(
-                "timeRangeArr",
-                JSON.stringify(timeRangeArr)
-              );
             }
 
             //NewEdit
             sessionStorage.setItem("isAuthenticated", true);
-            sessionStorage.setItem("name", data.data[0].NAME);
+            // sessionStorage.setItem("name", data.data[0].NAME);
             sessionStorage.setItem("email", data.data[0].IDUSER);
-            sessionStorage.setItem(
-              "attendenceDatesArr",
-              JSON.stringify(attendenceDatesArr)
-            );
-            sessionStorage.setItem(
-              "timeRangeArr",
-              JSON.stringify(timeRangeArr)
-            );
-            //NewEdit
+            sessionStorage.setItem("role", data.data[0].ROLE);
 
-            navigate("/");
+            if (data.data[0].ROLE == 'admin') navigate("/admin")
+            else navigate(`/${data.data[0].IDUSER}`)
           })
           .catch((error) => {
             sessionStorage.setItem("isAuthenticated", false);
@@ -130,7 +103,7 @@ const Login = ({ signin }) => {
             sessionStorage.setItem("isAuthenticated", true);
             sessionStorage.setItem("name", user.name);
             sessionStorage.setItem("email", user.email);
-            navigate("/");
+            navigate(`/${user.email}`)
           })
           .catch((error) => {
             sessionStorage.setItem("isAuthenticated", false);

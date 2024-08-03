@@ -14,6 +14,13 @@ const ChangePassword = () => {
   const email = location.state && location.state.email
   const state = location.state && location.state.state
 
+  useEffect(() => {
+    document.title = 'MarkAttendence - Change Password'
+
+    if(!state)
+      navigate('/forgotpassword')
+  }, [])
+
   const handleChange = useCallback(
     (event) => {
       setPassword({

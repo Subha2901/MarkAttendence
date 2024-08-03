@@ -26,24 +26,36 @@ import { UserProfileContext } from "../App";
 
 const Navbar = () => {
   const location = useLocation();
-  const [name, setName] = useState("");
+  const [name, setName] = useState(sessionStorage.getItem("name") || "");
   const [signin, setSignin] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
-  const { setProfileVisible, profileVisible } = useContext(UserProfileContext);
+  const { setProfileVisible, profileVisible, loading, setLoading } = useContext(UserProfileContext);
 
   useEffect(() => {
     const path = location.pathname;
     console.log(path);
 
-    if (path == "/login" || path == "/signup") {
+    if (path == "/login" || path == "/signup" || path == "/changepassword" || path == "/forgotpassword") {
       setSignin(false);
     } else {
       setSignin(true);
       setName(sessionStorage.getItem("name"));
     }
-  }, [location]);
+  }, [location, loading, setLoading]);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setName(sessionStorage.getItem("name"));
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -82,7 +94,7 @@ const Navbar = () => {
         <div className="navbar-brand">
           <div className="container ">
             <img src={Logo} alt="Website Logo" />
-            <CustomTypeWriter userName={name} signIn={signin} />
+            <CustomTypeWriter userName={name} signIn={signin} loading={loading} />
           </div>
         </div>
         <div className="navbar-nav">

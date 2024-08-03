@@ -49,3 +49,15 @@
     opacity: 0.5 !important;
 }
 
+.userDetails-div{
+    margin-top: 20px;
+    border: dashed 1px;
+    padding: 5px;
+    font-size: 18px;
+    font-family: monospace;
+}
+
+.userDetails-div span{
+    font-size: 20px;
+    font-weight: 500;
+}

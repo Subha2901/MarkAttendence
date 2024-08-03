@@ -30,6 +30,7 @@ const NewMarkedList = ({ value, timeRange }) => {
       <CustomScroll
         heightRelativeToParent="calc(100% - 20px)"
         style={{ display: "flex", flexDirection: "column-reverse !important" }}
+        allowOuterScroll
       >
         <ol
           className="style_1"

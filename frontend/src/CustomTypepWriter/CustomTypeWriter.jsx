@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Typewriter from "typewriter-effect/dist/core";
 import './CustomTypeWriter.css'
 
-const CustomTypeWriter = ({ userName, signIn }) => {
+const CustomTypeWriter = ({ userName, signIn, loading }) => {
   useEffect(() => {
     var app = document.getElementById("CUstom");
 
@@ -27,7 +27,8 @@ const CustomTypeWriter = ({ userName, signIn }) => {
         )
         .pauseFor(10000000)
         .start();
-    } else {
+    } 
+    else {
       typewriter
         .pauseFor(200)
         .typeString(
@@ -44,7 +45,7 @@ const CustomTypeWriter = ({ userName, signIn }) => {
         .pauseFor(10000000)
         .start();
     }
-  }, [signIn]);
+  }, [signIn, userName]);
 
   return <span id="CUstom"></span>;
 };

@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useContext } from "react";
 import "./UserDetails.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Calendar } from "@natscale/react-calendar";
 import "@natscale/react-calendar/dist/main.css";
 import axios from "axios";
@@ -12,6 +12,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { TimePicker } from "antd";
 import NewMarkedList from "../NewMarkedList/NewMarkedList";
+import { UserProfileContext } from "../App";
 
 const UserDetails = () => {
   // const [width, setWidth] = useState(window.innerWidth);
@@ -27,6 +28,8 @@ const UserDetails = () => {
   const [timeRange, setTimeRange] = useState([]);
   const navigate = useNavigate();
   const [index, setIndex] = useState(0);
+  const location = useLocation();
+  const { setLoading } = useContext(UserProfileContext);
 
   if (sessionStorage.length === 0 && localStorage.length != 0) {
     for (let i = 0; i < localStorage.length; i++) {
@@ -40,13 +43,23 @@ const UserDetails = () => {
   //   setIndex(index + 1);
   // }, [sessionStorage.getItem("attendenceDatesArr")]);
 
+  // useEffect(() =>{
+  //   console.log(name);
+  //   setName(sessionStorage.getItem('name'))
+  // }, [location])
+
+  // useEffect(() => {
+  //   document.title = `MarkAttendence - ${name}`;
+  // }, [name])
+
   useEffect(() => {
     document.title = `MarkAttendence - ${name}`;
+    setLoading(name);
 
     const handleBeforeUnload = (event) => {
       event.preventDefault();
       event.returnValue = "";
-      if(localStorage.length !== 0){
+      if (localStorage.length !== 0) {
         for (let i = 0; i < sessionStorage.length; i++) {
           const key = sessionStorage.key(i);
           const value = sessionStorage.getItem(key);
@@ -132,6 +145,16 @@ const UserDetails = () => {
     [dates]
   );
 
+  const isDisabled = useCallback(
+    (date) => {
+      for (let i = 0; i < dates.length; i++)
+        if (new Date(dates[i]).getTime() == date.getTime()) return true;
+
+      if (date.getDay() === 6 || date.getDay() === 0) return true;
+    },
+    [dates]
+  );
+
   const handleLogout = () => {
     sessionStorage.clear();
     localStorage.clear();
@@ -140,7 +163,7 @@ const UserDetails = () => {
 
   return (
     <>
-      <div className="container-fluid" style={{ textAlign: "center" }}>
+      <div className="container" style={{ textAlign: "center" }}>
         <div className="outer-box container-fluid">
           <div className="calender container-fluid">
             {/* <div className="container header-div">
@@ -164,7 +187,7 @@ const UserDetails = () => {
               <Attendence_list setIndex={setIndex} index={index} />
               <Calendar
                 key={index}
-                isDisabled={isHighlight}
+                isDisabled={isDisabled}
                 isHighlight={isHighlight}
                 useDarkMode
                 isMultiSelector

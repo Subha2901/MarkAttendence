@@ -16,6 +16,8 @@ const Icon = ({inputType, setInputType}) => {
                 marginTop: "-28px",
                 zIndex: "100",
                 color: "#0e5e5a",
+                marginRight: "10px",
+                cursor: 'pointer',
               }}
               onClick={() => setInputType(!inputType)}
             >
@@ -37,6 +39,8 @@ const Icon = ({inputType, setInputType}) => {
                 marginTop: "-28px",
                 zIndex: "100",
                 color: "#0e5e5a",
+                marginRight: "10px",
+                cursor: 'pointer',
               }}
               onClick={() => setInputType(!inputType)}
             >

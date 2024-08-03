@@ -1,10 +1,11 @@
+.rc_disabled .rc_body-cell_value{
+    color: #fff;
+    background-color: transparent !important;
+}
+
 .rc_highlight .rc_body-cell_value {
     background-color: #15f90033 !important;
     /* border-radius: 20%; */
-}
-
-.rc_disabled {
-    color: #fff;
 }
 
 .header-div {

@@ -15,6 +15,10 @@ const ForgotPassword = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = 'MarkAttendence - Forgot Password'
+  }, [])
+
+  useEffect(() => {
     if (hasError) setHasError(false);
     if (checked) setChecked(false);
     setOtp("");

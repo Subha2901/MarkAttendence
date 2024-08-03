@@ -145,6 +145,12 @@
     color: white;
 }
 
+.approve_icon:hover{
+    cursor: pointer;
+    transition: ease-in-out 50ms;
+    transform: scale(1.2);
+}
+
 /* .tooltip{
     padding: 5px 10px  !important;
     font-size: 75% !important; 
@@ -152,3 +158,26 @@
     border-radius: 50% !important;
     opacity: 0.3 !important;
 } */
+
+.style_1 {
+    counter-reset: list-counter;
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  .style_1 li {
+    position: relative;
+    padding-left: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .style_1 li::before {
+    content: none; /* Hide default list number */
+  }
+  
+  .style_1 li input[type="checkbox"] {
+    position: absolute;
+    left: 0;
+    top: 0.25rem;
+  }
+  
