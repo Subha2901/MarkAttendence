@@ -13,6 +13,7 @@ let OTP;
 function generateOTP() {
   // Generate a random 6-digit number
   const otp = Math.floor(100000 + Math.random() * 900000);
+  console.log(otp);
   return otp;
 }
 
@@ -54,7 +55,7 @@ const dbConfig = {
   host: "localhost",
   database: "userschema",
   user: "root",
-  password: "Subha2901@",
+  password: "Subha29",
 };
 
 // Create connection pool
@@ -104,10 +105,7 @@ app.post("/login", (req, res) => {
 
           if (result) {
             console.log("Login successful");
-                return res
-                  .status(200)
-                  .json({data: data });
-              
+            return res.status(200).json({ data: data });
           } else {
             console.log("Invalid password");
             return res.status(500).json({ error: "Invalid credentials" });
@@ -121,7 +119,9 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/user", (req, res) => {
-  //   console.log(req.body);
+  console.log("In /user url");
+
+  console.log(req.body);
 
   const { email } = req.body;
 
@@ -221,7 +221,7 @@ app.post("/signup", (req, res) => {
   //   console.log(req.body.password);
   //   console.log(req.body.name);
 
-  var name = (req.body.name).trim().replace(/\s+/g, ' ');
+  var name = req.body.name.trim().replace(/\s+/g, " ");
   bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
     if (err) {
       console.error("Error hashing password:", err);
@@ -354,15 +354,20 @@ app.post("/edittime", (req, res) => {
 });
 
 app.post("/delete", (req, res) => {
-  // console.log(req.body);
-  // console.log(req.body.email);
-  // console.log(req.body.value);
-
   const { email, date } = req.body;
 
-  let inputs = [email, date.substr(0, 8) + (parseInt(date.substr(8, 2)) + 1)];
+  if (date.length == 0)
+    return res.status(500).json({ error: "No Date is selected to delete" });
+
+  const formattedDates = date.map((item) => {
+    let datePart = item.substr(0, 8);
+    let day = parseInt(item.substr(8, 2)) + 1;
+    return datePart + (day < 10 ? "0" + day : day);
+  });
+
+  let inputs = [email];
   const sql =
-    "DELETE FROM ATTENDENCE_TABLE WHERE USERID = ? AND DATE(DATE) = ?";
+    "DELETE FROM ATTENDENCE_TABLE WHERE USERID = ? AND DATE(DATE) IN ('" + formattedDates.join("','") +"')";
 
   // Get connection from the pool
   pool.getConnection((err, connection) => {
@@ -395,9 +400,18 @@ app.post("/delete", (req, res) => {
 app.post("/approve", (req, res) => {
   const { email, date } = req.body;
 
-  let inputs = [email, date.substr(0, 8) + (parseInt(date.substr(8, 2)) + 1)];
+  if (date.length == 0)
+    return res.status(500).json({ error: "No Date is selected to approve" });
+
+  const formattedDates = date.map((item) => {
+    let datePart = item.substr(0, 8);
+    let day = parseInt(item.substr(8, 2)) + 1; // increment day by 1
+    return datePart + (day < 10 ? "0" + day : day); // handle single-digit day properly
+  });
+
+  let inputs = [email];
   const sql =
-    "UPDATE attendence_table SET status = 'approve', approve_time = NOW() WHERE userid = ? AND DATE(date) = ?";
+    "UPDATE attendence_table SET status = 'approve', approve_time = NOW() WHERE userid = ? AND DATE(date) IN ('" + formattedDates.join("','") + "')";
 
   // Get connection from the pool
   pool.getConnection((err, connection) => {
@@ -431,8 +445,7 @@ app.post("/namechange", (req, res) => {
   const { name, email } = req.body;
 
   let inputs = [name, email];
-  const sql =
-    "update user set name = ? where iduser = ?";
+  const sql = "update user set name = ? where iduser = ?";
 
   // Get connection from the pool
   pool.getConnection((err, connection) => {
@@ -455,9 +468,7 @@ app.post("/namechange", (req, res) => {
       console.log("Updation Successful");
       console.log(result);
 
-      return res
-        .status(200)
-        .json({ message: "Name updated successfully" });
+      return res.status(200).json({ message: "Name updated successfully" });
     });
   });
 });
@@ -465,9 +476,18 @@ app.post("/namechange", (req, res) => {
 app.post("/reject", (req, res) => {
   const { email, date } = req.body;
 
-  let inputs = [email, date.substr(0, 8) + (parseInt(date.substr(8, 2)) + 1)];
+  if (date.length == 0)
+    return res.status(500).json({ error: "No Date is selected to approve" });
+
+  const formattedDates = date.map((item) => {
+    let datePart = item.substr(0, 8);
+    let day = parseInt(item.substr(8, 2)) + 1;
+    return datePart + (day < 10 ? "0" + day : day);
+  });
+
+  let inputs = [email];
   const sql =
-    "UPDATE attendence_table SET status = 'reject', approve_time = NOW() WHERE userid = ? AND DATE(date) = ?";
+    "UPDATE attendence_table SET status = 'reject', approve_time = NOW() WHERE userid = ? AND DATE(date) IN ('" + formattedDates.join("','") + "')";
 
   // Get connection from the pool
   pool.getConnection((err, connection) => {
@@ -496,7 +516,6 @@ app.post("/reject", (req, res) => {
     });
   });
 });
-
 
 app.post("/emailcheck", (req, res) => {
   // console.log(req.body);

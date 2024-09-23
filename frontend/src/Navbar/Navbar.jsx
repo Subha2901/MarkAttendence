@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Navbar.css";
 import Logo from "../Images/Logo.png";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -31,13 +25,19 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
-  const { setProfileVisible, profileVisible, loading, setLoading } = useContext(UserProfileContext);
+  const { setProfileVisible, profileVisible, loading, setLoading } =
+    useContext(UserProfileContext);
 
   useEffect(() => {
     const path = location.pathname;
     console.log(path);
 
-    if (path == "/login" || path == "/signup" || path == "/changepassword" || path == "/forgotpassword") {
+    if (
+      path == "/login" ||
+      path == "/signup" ||
+      path == "/changepassword" ||
+      path == "/forgotpassword"
+    ) {
       setSignin(false);
     } else {
       setSignin(true);
@@ -75,15 +75,16 @@ const Navbar = () => {
     } else if (name == "signup") {
       navigate("/signup");
     } else if (name == "about") {
-      const element = document.getElementById('about');
-      if(element){
-        element.scrollIntoView({behavior: "smooth"})
+      setProfileVisible(profileVisible);
+      const element = document.getElementById("about");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
       }
     } else if (name == "userdetails") {
       setProfileVisible(!profileVisible);
-      const element = document.getElementById('about');
-      if(element){
-        element.scrollIntoView({behavior: "smooth"})
+      const element = document.getElementById("about");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
       }
     }
   };
@@ -94,7 +95,11 @@ const Navbar = () => {
         <div className="navbar-brand">
           <div className="container ">
             <img src={Logo} alt="Website Logo" />
-            <CustomTypeWriter userName={name} signIn={signin} loading={loading} />
+            <CustomTypeWriter
+              userName={name}
+              signIn={signin}
+              loading={loading}
+            />
           </div>
         </div>
         <div className="navbar-nav">
@@ -152,15 +157,15 @@ const Navbar = () => {
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
             {signin && (
-                <MenuItem
-                  name="userdetails"
-                  onClick={() => handleClose("userdetails")}
-                >
-                  <ListItemIcon>
-                    <AccountCircleIcon fontSize="medium" />
-                  </ListItemIcon>
-                  My Account
-                </MenuItem>
+              <MenuItem
+                name="userdetails"
+                onClick={() => handleClose("userdetails")}
+              >
+                <ListItemIcon>
+                  <AccountCircleIcon fontSize="medium" />
+                </ListItemIcon>
+                My Account
+              </MenuItem>
             )}
             {signin && <Divider />}
             {!signin && (
@@ -180,12 +185,12 @@ const Navbar = () => {
               </MenuItem>
             )}
             {!signin && <Divider />}
-              <MenuItem name="about" onClick={() => handleClose("about")}>
-                <ListItemIcon>
-                  <Settings fontSize="small" />
-                </ListItemIcon>
-                About US
-              </MenuItem>
+            <MenuItem name="about" onClick={() => handleClose("about")}>
+              <ListItemIcon>
+                <Settings fontSize="small" />
+              </ListItemIcon>
+              About US
+            </MenuItem>
             {signin && (
               <MenuItem name="logout" onClick={() => handleClose("logout")}>
                 <ListItemIcon>

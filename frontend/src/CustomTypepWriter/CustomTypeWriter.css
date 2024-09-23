@@ -1,6 +1,21 @@
 #CUstom{
-    color: white;
-    font-size: 25px;
-    font-weight: 500;
-    font-family: cursive;
+  color: white;
 }
+
+.logo_css {
+  font-family: "Handjet", sans-serif !important;
+  font-optical-sizing: auto;
+  font-weight: 800 !important;
+  font-style: normal;
+  font-variation-settings:
+    "ELGR" 1,
+    "ELSH" 2;
+  font-size: 2.5rem !important;
+}
+
+@media (max-width: 768px) {
+  .logo_css {
+    font-size: 1.4rem !important;
+  }
+}
+

@@ -3,7 +3,6 @@
     top: 0;
     left: 0;
     right: 0;
-    margin: 0 9.5rem;
     /* display: flex;
     color: white;
     justify-content: center;
@@ -11,7 +10,6 @@
 }
 
 .navbar{
-    margin: 20px 0px;
     justify-content: center !important;
 }
 
@@ -38,6 +36,38 @@
     color: white;
     font-size: 25px;
     font-weight: 500;
-    font-family: cursive;
+    font-family: "Playpen Sans", cursive;
+    font-style: normal;
     width: fit-content;
+}
+
+@media (min-width: 768px) {
+    .navbar-brand > .container {
+        height: 50px !important;
+    }
+}
+
+/* Media query for mobile */
+@media (max-width: 768px) {
+    .navbar-brand {
+        max-width: 350px;
+        min-width: 350px;
+        overflow: scroll;
+        scrollbar-width: none;
+    }
+    .navbar-nav{
+        margin: 0px;
+    }
+
+    .navbar-div{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+    }
+
+    .navbar-brand span{
+        font-size: 1rem;
+    }
 }

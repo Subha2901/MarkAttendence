@@ -5,7 +5,10 @@ import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const options = [
-  'Select All'
+  'Select All',
+  'Approve All',
+  'Reject All',
+  'Delete all'
 ];
 
 const ITEM_HEIGHT = 48;

@@ -1,13 +1,11 @@
-.about-us{
+.about-us {
     margin: 20px;
     display: flex;
-    padding: 0px 200px;
-    justify-content: baseline;
-    align-items: baseline;
+    padding: 0px 13%;
     /* background-image: linear-gradient(transparent, white, transparent); */
 }
 
-.about-text-div{
+.about-text-div {
     font-size: 16px;
     font-weight: 600;
     font-family: monospace;
@@ -16,40 +14,39 @@
     width: 60%;
 }
 
-.about-img-div{
+.about-img-div {
     margin: 0px 60px;
 }
 
-.about-img{
-    height: 300px;
+.about-img-top,
+.about-img-down {
+    height: 40vh;
     border-radius: 10%;
-    box-shadow:rgb(152 188 161 / 21%) 193px 16px 129px -2px, rgba(255, 255, 255, 0.5) 0px 23px 10px -12px, rgba(37, 61, 253, 4.35) 0px -59px 0px -54px inset;
+    box-shadow: rgb(152 188 161 / 21%) 193px 16px 129px -2px, rgba(255, 255, 255, 0.5) 0px 23px 10px -12px, rgba(37, 61, 253, 4.35) 0px -59px 0px -54px inset;
 }
 
-.about-heading{
+.about-heading {
     font-size: 20px;
     font-weight: 700;
-    font-family: cursive;
+    font-family: "Playpen Sans", cursive;
 }
 
-.web-name{
-    font-size: 40px;
-    font-weight: 800;
-    font-family: fangsong;
+.web-name {
+    font-size: 40px !important;
     color: white;
 }
 
-.new_logo{
+.new_logo {
     position: relative;
     opacity: 0.1;
     transition: 0.3s ease-in-out;
 }
 
-.new_logo:hover{
+.new_logo:hover {
     opacity: 0.5 !important;
 }
 
-.userDetails-div{
+.userDetails-div {
     margin-top: 20px;
     border: dashed 1px;
     padding: 5px;
@@ -57,7 +54,31 @@
     font-family: monospace;
 }
 
-.userDetails-div span{
+.userDetails-div span {
     font-size: 20px;
     font-weight: 500;
+}
+
+.mobile_image{
+    display: none;
+}
+
+
+/* Media query for mobile */
+@media (max-width: 768px) {
+    .about-us {
+        margin: 10vh 0px;
+        display: block;
+        padding: 0px;
+    }
+
+    .about-text-div {
+        margin: auto;
+        width: 90%;
+        /*text-shadow: 1px 1px 2px red, 0 0 1em black, 0 0 0.2em black;*/
+    }
+
+    .about-img-div {
+        display: none;
+    }
 }

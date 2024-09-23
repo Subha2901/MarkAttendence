@@ -1,5 +1,5 @@
 import React from "react";
-import "./NewMarkedList.sass";
+import "./NewMarkedList.css";
 import { CustomScroll } from "react-custom-scroll";
 
 const NewMarkedList = ({ value, timeRange }) => {
@@ -21,11 +21,7 @@ const NewMarkedList = ({ value, timeRange }) => {
 
   return (
     <div
-      className="container"
-      style={{
-        maxHeight: "420px",
-        minWidth: '170px'
-      }}
+      className="container newmarked_list"
     >
       <CustomScroll
         heightRelativeToParent="calc(100% - 20px)"

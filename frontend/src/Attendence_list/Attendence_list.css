@@ -1,154 +1,158 @@
-:root{
-    --rt-opacity:0.3 
+:root {
+  --rt-opacity: 0.3;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
 }
 
 /* Page */
-.cd__main{
-    position: relative;
-   min-height: 640px;
+.cd__main {
+  position: relative;
+  min-height: 640px;
 }
 .more-menu {
-    width: 100px;
+  width: 100px;
 }
 
 /* More Button / Dropdown Menu */
 
 .more-btn,
 .more-menu-btn {
-    background: none;
-    border: 0 none;
-    line-height: normal;
-    overflow: visible;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    width: 100%;
-    text-align: left;
-    outline: none;
-    cursor: pointer;
+  background: none;
+  border: 0 none;
+  line-height: normal;
+  overflow: visible;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  width: 100%;
+  text-align: left;
+  outline: none;
+  cursor: pointer;
 }
 
 .more-dot {
-    background-color: rgba(255, 242, 242, 0.52);
-    margin: 0 auto;
-    display: inline-block;
-    width: 5px;
-    height: 5px;
-    margin-right: 1px;
-    border-radius: 50%;
-    transition: background-color 0.3s;
+  background-color: rgba(255, 242, 242, 0.52);
+  margin: 0 auto;
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 1px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
 }
 
 .more-menu {
-    position: absolute;
-    top: 100%;
-    z-index: 900;
-    float: left;
-    padding: 10px 0;
-    margin-top: 9px;
-    background-color: #fff;
-    border: 1px solid #ccd8e0;
-    border-radius: 4px;
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.25);
-    opacity: 0;
-    transform: translate(0, 15px) scale(.95);
-    transition: transform 0.1s ease-out, opacity 0.1s ease-out;
-    pointer-events: none;
+  position: absolute;
+  top: 100%;
+  z-index: 900;
+  float: left;
+  padding: 10px 0;
+  margin-top: 9px;
+  background-color: #fff;
+  border: 1px solid #ccd8e0;
+  border-radius: 4px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  transform: translate(0, 15px) scale(0.95);
+  transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+  pointer-events: none;
 }
 
 .more-menu-caret {
-    position: absolute;
-    top: -10px;
-    left: 12px;
-    width: 18px;
-    height: 10px;
-    float: left;
-    overflow: hidden;
+  position: absolute;
+  top: -10px;
+  left: 12px;
+  width: 18px;
+  height: 10px;
+  float: left;
+  overflow: hidden;
 }
 
 .more-menu-caret-outer,
 .more-menu-caret-inner {
-    position: absolute;
-    display: inline-block;
-    margin-left: -1px;
-    font-size: 0;
-    line-height: 1;
+  position: absolute;
+  display: inline-block;
+  margin-left: -1px;
+  font-size: 0;
+  line-height: 1;
 }
 
 .more-menu-caret-outer {
-    border-bottom: 10px solid #c1d0da;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    height: auto;
-    left: 0;
-    top: 0;
-    width: auto;    
+  border-bottom: 10px solid #c1d0da;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  height: auto;
+  left: 0;
+  top: 0;
+  width: auto;
 }
 
 .more-menu-caret-inner {
-    top: 1px;
-    left: 1px;
-    border-left: 9px solid transparent;
-    border-right: 9px solid transparent;
-    border-bottom: 9px solid #fff;
+  top: 1px;
+  left: 1px;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 9px solid #fff;
 }
 
 .more-menu-items {
-    margin: 0;
-    list-style: none;
-    padding: 0;
+  margin: 0;
+  list-style: none;
+  padding: 0;
 }
 
 .more-menu-item {
-    display: block;
+  display: block;
 }
 
 .more-menu-btn {
-    min-width: 100%;
-    color: #66757f;
-    cursor: pointer;
-    display: block;
-    font-size: 13px;
-    line-height: 18px;
-    padding: 5px 20px;
-    position: relative;
-    white-space: nowrap;
+  min-width: 100%;
+  color: #66757f;
+  cursor: pointer;
+  display: block;
+  font-size: 13px;
+  line-height: 18px;
+  padding: 5px 20px;
+  position: relative;
+  white-space: nowrap;
 }
 
 .more-menu-item:hover {
-    background-color: #489fe5;
+  background-color: #489fe5;
 }
 
 .more-menu-item:hover .more-menu-btn {
-    color: #fff;
+  color: #fff;
 }
 
 .more-btn:hover .more-dot,
 .show-more-menu .more-dot {
-    background-color: #7c858b;
+  background-color: #7c858b;
 }
 
 .show-more-menu .more-menu {
-    opacity: 1;
-    transform: translate(0, 0) scale(1);
-    pointer-events: auto;
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+  pointer-events: auto;
 }
 
 .list_edit {
-    margin: 2px;
-    margin-right: 10px;
-    padding: 1px;
-    cursor: pointer;
-    transition: 0.2s ease-in-out;
+  margin: 2px;
+  margin-right: 10px;
+  padding: 1px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
 }
-.list_edit:hover{
-    color: white;
+.list_edit:hover {
+  color: white;
 }
 
-.approve_icon:hover{
-    cursor: pointer;
-    transition: ease-in-out 50ms;
-    transform: scale(1.2);
+.approve_icon:hover {
+  cursor: pointer;
+  transition: ease-in-out 50ms;
+  transform: scale(1.2);
 }
 
 /* .tooltip{
@@ -160,24 +164,172 @@
 } */
 
 .style_1 {
-    counter-reset: list-counter;
-    list-style: none;
-    padding-left: 0;
-  }
-  
-  .style_1 li {
-    position: relative;
-    padding-left: 2.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .style_1 li::before {
-    content: none; /* Hide default list number */
-  }
-  
-  .style_1 li input[type="checkbox"] {
+  counter-reset: list-counter;
+  list-style: none;
+  padding-left: 0;
+}
+
+.style_1 li {
+  position: relative;
+  padding-left: 0.5rem;
+  margin-bottom: 1rem;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.style_1 li::before {
+  content: none; /* Hide default list number */
+}
+
+.style_1 li input[type="checkbox"] {
+  position: absolute;
+  display: flex;
+  opacity: 0.55;
+  left: -2.75rem;
+  height: calc(1.5rem - 1px);
+  width: calc(1.5rem - 1px);
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 0.5px solid currentcolor;
+}
+
+ol.style_1 {
+  counter-reset: li;
+}
+
+ol.style_1 small {
+  opacity: 0.3;
+}
+
+ol.style_1 ol,
+ol.style_1 ul {
+  padding: 0.75rem 0 0 1.5rem;
+}
+
+ol.style_1 li {
+  margin-bottom: 0.375rem;
+}
+
+ol.style_1 > li {
+  position: relative;
+  counter-increment: li;
+  min-height: 2rem;
+  padding-top: 0.5rem;
+  list-style: none;
+}
+
+ol.style_1 > li::before,
+ol.style_1 > li::after {
+  position: absolute;
+  display: flex;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out; /* Adjust the speed here */
+}
+
+ol.style_1 > li::before {
+  content: counter(li);
+  left: -2.75rem;
+  height: calc(1.5rem - 1px);
+  width: calc(1.5rem - 1px);
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 0.5px solid currentcolor;
+}
+
+ol.style_1 > li::after {
+  content: "";
+  left: -2rem;
+  top: calc(1.9rem + 1px);
+  height: calc(100% - 2rem);
+  border-left: 0.5px solid currentcolor;
+}
+/* 
+input {
     position: absolute;
-    left: 0;
-    top: 0.25rem;
+    display: flex;
+    opacity: 0.55;
+    left: -2.75rem;
+    height: calc(1.5rem - 1px);
+    width: calc(1.5rem - 1px);
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 0.5px solid currentcolor;
+    transition: 0.5s ease-in-out;
   }
-  
+   */
+.show-pseudo::before {
+  visibility: visible;
+}
+.show-pseudo::after {
+  visibility: visible;
+}
+
+.hide-pseudo::before {
+  visibility: hidden;
+}
+.hide-pseudo::after {
+  visibility: hidden;
+}
+
+.MoreOptionIcon {
+  color: wheat !important;
+  border-radius: 50% !important;
+  border: 0.1px dashed rgba(230, 246, 230, 0.3) !important;
+  margin-right: 10px !important;
+}
+
+.MoreOptionIcon:hover {
+  border: 0.1px dashed rgba(165, 244, 165, 0.833) !important;
+}
+
+/* Basic setup for fade in/out transitions */
+li,
+input[type="checkbox"] {
+  transition: opacity 0.5s ease-in-out; /* Adjust the speed here */
+  position: absolute; /* Ensures the checkbox appears in the same spot as the <li> */
+}
+
+.fade-out::before {
+  opacity: 0 !important;
+  visibility: hidden;
+}
+
+.fade-in::after {
+  opacity: 1 !important;
+  visibility: visible;
+}
+
+.fade-out::after {
+  opacity: 0 !important;
+  visibility: hidden;
+}
+
+.fade-in::before {
+  opacity: 1 !important;
+  visibility: visible;
+}
+
+input[type="checkbox"].fade-out {
+  opacity: 0 !important;
+  visibility: hidden;
+}
+
+input[type="checkbox"].fade-in {
+  opacity: 1 !important;
+  visibility: visible;
+}
+
+@media (max-width: 768px) {
+  .rcs-inner-container > div {
+    margin-left: 10px;
+  }
+
+  .attendence_div {
+    width: auto !important;
+    margin: 0px !important;
+  }
+}

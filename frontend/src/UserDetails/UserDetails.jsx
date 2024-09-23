@@ -93,15 +93,15 @@ const UserDetails = () => {
           console.log("Loop Started");
           if (value[i] !== val[i]) {
             tempTimeRange.splice(i, 1);
-            alert(i);
-            alert("Timerange 1-> " + tempTimeRange);
+            // alert(i);
+            // alert("Timerange 1-> " + tempTimeRange);
             setTimeRange(tempTimeRange);
             break;
           }
           if (value[l - 1 - i] !== val[l - 2 - i]) {
             tempTimeRange.splice(l - 1 - i, 1);
-            alert(l - 1 - i);
-            alert("TimeRange 2 -> " + tempTimeRange);
+            // alert(l - 1 - i);
+            // alert("TimeRange 2 -> " + tempTimeRange);
             setTimeRange(tempTimeRange);
             break;
           }
@@ -151,6 +151,10 @@ const UserDetails = () => {
         if (new Date(dates[i]).getTime() == date.getTime()) return true;
 
       if (date.getDay() === 6 || date.getDay() === 0) return true;
+      const today = new Date();
+      if (date.getTime() > today.getTime()) {
+        return true;
+      }
     },
     [dates]
   );
@@ -166,24 +170,7 @@ const UserDetails = () => {
       <div className="container" style={{ textAlign: "center" }}>
         <div className="outer-box container-fluid">
           <div className="calender container-fluid">
-            {/* <div className="container header-div">
-              <h1
-                className="py-3"
-                style={{
-                  fontSize: "30px",
-                  fontFamily: "cursive",
-                  fontWeight: "700",
-                  color: "white",
-                }}
-              >
-                Hi {name}, Please mark your attendence
-              </h1>
-              <button className="logout-btn" onClick={handleLogout}>
-                Logout
-              </button>
-            </div> */}
-
-            <div className="d-flex flex-row">
+            <div className="d-flex flex-row desktop-view">
               <Attendence_list setIndex={setIndex} index={index} />
               <Calendar
                 key={index}
@@ -196,12 +183,42 @@ const UserDetails = () => {
                 value={value}
                 onChange={onChange}
               />
-              <NewMarkedList value={value} timeRange={timeRange} />
+              <div style={{ paddingLeft: "25px" }}>
+                <NewMarkedList value={value} timeRange={timeRange} />
+              </div>
             </div>
+
+            {/* mobile structure start */}
+
+            <div className="d-flex flex-column mobile-view">
+              <Calendar
+                key={index}
+                isDisabled={isDisabled}
+                isHighlight={isHighlight}
+                useDarkMode
+                isMultiSelector
+                size={420}
+                fontSize={18}
+                value={value}
+                onChange={onChange}
+              />
+              <div className="d-flex flex-row">
+                <NewMarkedList value={value} timeRange={timeRange} />
+                <Attendence_list setIndex={setIndex} index={index} />
+              </div>
+            </div>
+
+            {/* mobile structure end */}
           </div>
-          <button className="btn btn-lg btn-danger" onClick={handleSubmit}>
-            Submit
-          </button>
+          <div className="container submit_div">
+            <button
+              className="btn btn-lg btn-danger"
+              onClick={handleSubmit}
+              style={{ zIndex: "200", position: "sticky" }}
+            >
+              Submit
+            </button>
+          </div>
         </div>
 
         {/* <-- TimePpoup --> */}
@@ -211,6 +228,17 @@ const UserDetails = () => {
             component: "form",
             onSubmit: (event) => {
               event.preventDefault();
+              console.log(
+                event.target[0].value.length,
+                event.target[1].value.length
+              );
+
+              if (
+                !event.target[0].value.length &&
+                !event.target[1].value.length
+              ) {
+                return;
+              }
               setTimeRange([
                 ...timeRange,
                 [event.target[0].value, event.target[1].value],

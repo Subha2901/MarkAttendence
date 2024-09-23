@@ -89,6 +89,28 @@ const Login = ({ signin }) => {
             else navigate(`/${data.data[0].IDUSER}`)
           })
           .catch((error) => {
+
+            // for mobile server
+            axios
+          .post("http://192.168.1.7:4000/login", user)
+          .then((res) => {
+            console.log(res);
+            const data = res.data;
+
+            if (checkBox) {
+              localStorage.setItem("isAuthenticated", true);
+              //localStorage.setItem("name", data.data[0].NAME);
+              localStorage.setItem("email", data.data[0].IDUSER);
+            }
+
+            //NewEdit
+            sessionStorage.setItem("isAuthenticated", true);
+            // sessionStorage.setItem("name", data.data[0].NAME);
+            sessionStorage.setItem("email", data.data[0].IDUSER);
+            sessionStorage.setItem("role", data.data[0].ROLE);
+          })
+
+          // mobile server end here
             sessionStorage.setItem("isAuthenticated", false);
             console.log("Error:", error);
             setError({
@@ -119,7 +141,7 @@ const Login = ({ signin }) => {
   );
 
   return (
-    <div className="login-div container">
+    <div className="login-div container-fluid">
       <p className="h1 mt-3" style={{ alignContent: "center" }}>
         Please Sign In
       </p>
@@ -214,7 +236,7 @@ const Login = ({ signin }) => {
             </div>
           </div>
         )}
-        <div className="mb-3 form-check" style={{ fontSize: "20px" }}>
+        <div className="mb-3 form-check">
           <input
             type="checkbox"
             className="form-check-input"

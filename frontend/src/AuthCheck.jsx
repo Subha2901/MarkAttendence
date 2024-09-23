@@ -1,14 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AdminPanel from "./AdminPanel/AdminPanel";
-import axios from "axios";
 
 const AuthCheck = (props) => {
   const { Component } = props;
   const navigate = useNavigate();
   const { username } = useParams();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    console.log(localStorage);
     if (
       sessionStorage.getItem("isAuthenticated") === "true" ||
       localStorage.getItem("isAuthenticated") === "true"
@@ -32,12 +33,15 @@ const AuthCheck = (props) => {
       } else {
         navigate(`/${username}`);
       }
+
+      setLoading(false);
     } else {
       console.log("IsAthenticated is false");
       navigate("/login");
     }
   }, [navigate, username]);
 
+  if (loading) return <div>Loading...</div>;
   return <div>{username == "admin" ? <AdminPanel /> : <Component />}</div>;
 };
 

@@ -13,6 +13,8 @@ const UserProfile = () => {
     axios
       .post("http://localhost:4000/user", { email: username })
       .then((res) => {
+        console.log('In response of userprofile');
+        
         const data = res.data;
         const dates = data.dateDetails;
 

@@ -7,5 +7,5 @@
     align-items: center !important;
     background-color: #004C4C;
     background-image: linear-gradient(black, #004C4C,black, black);
-    min-height: 100px;
+    /* min-height: 100px; */
 }
