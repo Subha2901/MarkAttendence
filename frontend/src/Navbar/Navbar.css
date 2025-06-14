@@ -11,6 +11,7 @@
 
 .navbar{
     justify-content: center !important;
+    align-items: flex-end;
 }
 
 /* .navbar-div .container-fluid{
@@ -19,6 +20,8 @@
 
 .navbar-brand{
     min-width: 700px;
+    height: 70px;
+    position: relative;
 }
 
 .navbar-nav{
@@ -64,7 +67,7 @@
         top: 0;
         left: 0;
         right: 0;
-        margin: 0;
+        margin: auto;
     }
 
     .navbar-brand span{

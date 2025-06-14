@@ -1,5 +1,6 @@
 #CUstom{
   color: white;
+  position: absolute;
 }
 
 .logo_css {
@@ -10,7 +11,7 @@
   font-variation-settings:
     "ELGR" 1,
     "ELSH" 2;
-  font-size: 2.5rem !important;
+  font-size: 2rem !important;
 }
 
 @media (max-width: 768px) {

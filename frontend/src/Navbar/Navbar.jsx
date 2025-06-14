@@ -93,7 +93,7 @@ const Navbar = () => {
     <div className="container navbar-div">
       <nav className="navbar">
         <div className="navbar-brand">
-          <div className="container ">
+          <div className="container " style={{position: "absolute", bottom: "0"}}>
             <img src={Logo} alt="Website Logo" />
             <CustomTypeWriter
               userName={name}

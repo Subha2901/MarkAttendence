@@ -290,7 +290,6 @@ input {
 li,
 input[type="checkbox"] {
   transition: opacity 0.5s ease-in-out; /* Adjust the speed here */
-  position: absolute; /* Ensures the checkbox appears in the same spot as the <li> */
 }
 
 .fade-out::before {
